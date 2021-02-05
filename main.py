@@ -11,13 +11,17 @@ def get_data(url: str):
         print(response.text)
         return[]
     json_data = response.json()
+    page_data = json_data["results"]
+    final_data.extend(page_data)
     return final_data
 
 
 def main():
     url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id,school.name,2013.student.size"
     all_data = get_data(url)
-    print(all_data)
+    for school_data in all_data:
+        print(school_data)
+
 
 
 if __name__ == '__main__':
