@@ -18,8 +18,9 @@ def get_data(url: str):
 
     print(total_results,current_page, results_per_page)
 
+    # All the results on each page in a singular list returned
+    each_page_data = json_data["results"]
 
-    # each_page_data = json_data["results"]
     # final_data.extend(each_page_data)
     return final_data
 
