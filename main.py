@@ -70,7 +70,8 @@ def main():
     meta_data = get_metadata(url)
     process_data(url, meta_data, file_name)
 
- if __name__ == '__main__':
+
+if __name__ == '__main__':
     main()
 
 
