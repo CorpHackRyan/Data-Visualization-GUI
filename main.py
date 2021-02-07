@@ -41,7 +41,6 @@ def write_data(filename, data_response):
 
 
 def get_metadata(url: str):
-    final_data = []
     final_url = f"{url}&api_key={secrets.api_key}&page=0"
     response = requests.get(final_url)
 
