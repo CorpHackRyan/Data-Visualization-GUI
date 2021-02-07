@@ -26,7 +26,7 @@ def get_data(url: str):
     # final_data.extend(each_page_data)
     # return final_data //(goes with the main() part/ for school_data in all_data)
 
-    for page_counter in range(math.floor(total_pages)):
+    for page_counter in range(3):
         for school_data in each_page_data:
             print(school_data)
             with open('school_export.txt', 'a') as append_writer:
