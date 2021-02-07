@@ -5,7 +5,7 @@ import json
 
 
 def process_data(url: str, meta_from_main, export_filename):
-    # meta_from_main is a list with the following index descriptions
+    #  meta_from_main is a list with the following index descriptions
     #                 0 index = total results
     #                 1 index = current page
     #                 2 index = results per page
