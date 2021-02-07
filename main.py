@@ -1,7 +1,7 @@
 import requests
 import secrets
 import math
-
+import json
 
 def get_data(url: str):
     final_data = []
@@ -26,9 +26,12 @@ def get_data(url: str):
     # final_data.extend(each_page_data)
     # return final_data //(goes with the main() part/ for school_data in all_data)
 
-    for page_counter in range(3):
+    for page_counter in range(math.floor(total_pages)):
         for school_data in each_page_data:
             print(school_data)
+            with open('school_export.txt', 'a') as append_writer:
+                json.dump(school_data, append_writer)
+                append_writer.write("\n")
 
 
 def main():
