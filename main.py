@@ -56,14 +56,14 @@ def get_metadata(url: str):
     results_per_page = json_data["metadata"]["per_page"]
     total_pages = total_results / results_per_page
 
-    # All the results on each page in a singular list returned
-    each_page_data = json_data["results"]
-
     return [total_results, current_page, results_per_page, math.ceil(total_pages)]
 
 
 def main():
-    url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_count_over_poverty_line,2016.repayment.3_yr_repayment.overall"
+    url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3"
+    f"&fields=school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion."
+    f"overall_count_over_poverty_line,2016.repayment.3_yr_repayment.overall"
+
     file_name = "school_export.txt"
 
     meta_data = get_metadata(url)
