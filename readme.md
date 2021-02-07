@@ -1,12 +1,8 @@
-Write a readme.md for your project in the github project (you can do it with your jetbrains IDE if you like)
+    roconnor-Sprint1 (for Project 1)
+    Authored by: Ryan O'Connor
 
-    the readme should have
+roconnor-Sprint1 is a program that collects data from a given URL with specific field parameters in it. It will then take that data it has collected and export it to a text file.
 
-        your name
-
-        any install and run directions I need beyond the basics.
-
-        a brief description of what your project does
-
-        a brief description of what is missing from the project (if anything)
+    MISSING FROM PROJECT:
+    o Variability for field parameters to allow any field name for future requests
 
