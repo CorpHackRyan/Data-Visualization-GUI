@@ -29,16 +29,16 @@ def process_data(url: str, meta_from_main, export_filename):
 
         for school_data in each_page_data:
             print(school_data)
-            with open(export_filename, 'a') as export_file:
-                json.dump(school_data, export_file)
-                export_file.write("\n")
+            write_data(export_filename, school_data)
 
         page_counter += 1
         final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
 
 
-def write_data(x1: str, x2: str, x3: str):
-    pass
+def write_data(filename, data_response):
+    with open(filename, 'a') as export_file:
+        json.dump(data_response, export_file)
+        export_file.write("\n")
 
 
 def get_metadata(url: str):
@@ -70,12 +70,8 @@ def main():
     meta_data = get_metadata(url)
     process_data(url, meta_data, file_name)
 
-    print(meta_data)
-
-
-if __name__ == '__main__':
+ if __name__ == '__main__':
     main()
-
 
 
 
