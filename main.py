@@ -10,7 +10,6 @@ def process_data(url: str, meta_from_main, export_filename):
     #                 1 index = current page
     #                 2 index = results per page
     #                 3 index = total pages
-    # return [total_results, current_page, results_per_page, math.ceil(total_pages)]
 
     page_counter = 0
     final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
@@ -73,7 +72,6 @@ def main():
 
 if __name__ == '__main__':
     main()
-
 
 
 
