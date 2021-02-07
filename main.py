@@ -19,7 +19,7 @@ def process_data(url: str, meta_from_main, export_filename):
 
         if response.status_code != 200:
             print(response.text)
-            return []
+            exit(-1)
 
         json_data = response.json()
 
@@ -72,6 +72,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
