@@ -59,9 +59,10 @@ def get_metadata(url: str):
 
 
 def main():
-    url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3"
-    f"&fields=school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion."
-    f"overall_count_over_poverty_line,2016.repayment.3_yr_repayment.overall"
+
+    url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=school." \
+          "name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_count_over_" \
+          "poverty_line,2016.repayment.3_yr_repayment.overall"
 
     file_name = "school_export.txt"
 
