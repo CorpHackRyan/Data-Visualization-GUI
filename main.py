@@ -4,7 +4,7 @@ import math
 import json
 
 
-def process_data(url: str, meta_from_main):
+def process_data(url: str, meta_from_main, export_filename):
     # meta_from_main is a list with the following index descriptions
     #                 0 index = total results
     #                 1 index = current page
@@ -14,8 +14,6 @@ def process_data(url: str, meta_from_main):
 
     page_counter = 0
     final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
-
-    # meta_from_main[3] = 2
 
     for page_counter in range(meta_from_main[3]):
         response = requests.get(final_url)
@@ -31,7 +29,7 @@ def process_data(url: str, meta_from_main):
 
         for school_data in each_page_data:
             print(school_data)
-            with open('school_export.txt', 'a') as export_file:
+            with open(export_filename, 'a') as export_file:
                 json.dump(school_data, export_file)
                 export_file.write("\n")
 
@@ -70,7 +68,7 @@ def main():
     file_name = "school_export.txt"
 
     meta_data = get_metadata(url)
-    process_data(url, meta_data)
+    process_data(url, meta_data, file_name)
 
     print(meta_data)
 
