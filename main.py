@@ -2,6 +2,8 @@ import requests
 import secrets
 import math
 import json
+import sqlite3
+from typing import Tuple
 
 
 def process_data(url: str, meta_from_main, export_filename):
@@ -57,6 +59,57 @@ def get_metadata(url: str):
 
     return [total_results, current_page, results_per_page, math.ceil(total_pages)]
 
+#   Scope of Sprint 2
+#   - Pragmatically (avoid duplicating code) setup a database if the table does not already exist
+#   - Take the data from the previous sprint and save it into the database
+#   - Write (2) automated tests:
+#     (1) it will be a method that retrieves the data from the web and assures we get more than 1000 dat items
+#     (2) create a new empty database, run our table creation method, then run the save data to database method
+#         and check to see if the database contains the test university that you just put there
+
+
+def open_db(filename: str) -> Tuple[sqlite3.Connection, sqlite3.Cursor]:
+    db_connection = sqlite3.connect(filename)
+    cursor = db_connection.cursor()  # get ready to read/write data
+    return db_connection, cursor
+
+
+def close_db(connection: sqlite3.Connection):
+    connection.commit()  # make sure any changes get saved
+    connection.close()
+
+
+def setup_db(cursor: sqlite3.Cursor):
+    cursor.execute('''CREATE TABLE IF NOT EXISTS students(
+    banner_id INTEGER PRIMARY KEY,
+    first_name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    gpa REAL DEFAULT 0,
+    credits INTEGER DEFAULT 0
+    );''')
+
+    cursor.execute('''CREATE TABLE IF NOT EXISTS course(
+    course_prefix TEXT NOT NULL,
+    course_number INTEGER NOT NULL,
+    cap INTEGER DEFAULT 20,
+    description TEXT,
+    PRIMARY KEY(course_prefix, course_number)
+    );''')
+
+    cursor.execute('''CREATE TABLE IF NOT EXISTS class_list(
+    registration_id INTEGER PRIMARY KEY,
+    course_prefix TEXT NOT NULL,
+    course_number INTEGER NOT NULL,
+    banner_id INTEGER NOT NULL,
+    registration_date TEXT,
+    FOREIGN KEY (banner_id) REFERENCES student (banner_id)
+    ON DELETE CASCADE ON UPDATE NO ACTION,
+    FOREIGN KEY (course_prefix, course_number) REFERENCES courses (course_prefix, course_number)
+    ON DELETE CASCADE ON UPDATE NO ACTION
+    );''')
+
+#   ############################################################################################################
+
 
 def main():
 
@@ -65,9 +118,14 @@ def main():
           "poverty_line,2016.repayment.3_yr_repayment.overall"
 
     file_name = "school_export.txt"
+    db_name = "school_data.db"
 
-    meta_data = get_metadata(url)
-    process_data(url, meta_data, file_name)
+    # meta_data = get_metadata(url)
+    # process_data(url, meta_data, file_name)
+
+    conn, cursor = open_db(db_name)
+
+    close_db(conn)
 
 
 if __name__ == '__main__':
