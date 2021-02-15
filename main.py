@@ -105,8 +105,6 @@ def main():
           "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_" \
           "count_over_poverty_line,2016.repayment.3_yr_repayment.overall"
 
-    file_name = "school_export.txt"
-
     db_name = "school_data.db"
 
     meta_data = get_metadata(url)
