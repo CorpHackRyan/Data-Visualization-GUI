@@ -43,8 +43,9 @@ def process_data(url: str, meta_from_main, export_filename, cursor: sqlite3.Curs
             # and insert into
             # DB
 
-            school_tpl = (school_data["id"], school_data["school.name"], school_data["school.city"], school_data["2017.student.size"],
-                          school_data["2018.student.size"], school_data["2017.earnings.3_yrs_after_completion.overall_count_over_poverty_line"],
+            school_tpl = (school_data["id"], school_data["school.name"], school_data["school.city"],
+                          school_data["2017.student.size"], school_data["2018.student.size"],
+                          school_data["2017.earnings.3_yrs_after_completion.overall_count_over_poverty_line"],
                           school_data["2016.repayment.3_yr_repayment.overall"])
 
             print(school_tpl)
@@ -110,9 +111,9 @@ def setup_db(cursor: sqlite3.Cursor):
 
 def main():
 
-    og_url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=school."\
-          "name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_count_over_" \
-          "poverty_line,2016.repayment.3_yr_repayment.overall"
+    # og_url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=school."\
+    #      "name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_count_over_" \
+    #      "poverty_line,2016.repayment.3_yr_repayment.overall"
 
     url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
           "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_count_over_" \
