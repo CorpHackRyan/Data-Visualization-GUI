@@ -6,7 +6,7 @@ import sqlite3
 from typing import Tuple
 
 
-def process_data(url: str, meta_from_main, export_filename, cursor: sqlite3.Cursor):
+def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
     #  meta_from_main is a list with the following index descriptions
     #                 0 index = total results
     #                 1 index = current page
@@ -113,7 +113,7 @@ def main():
 
     conn, cursor = open_db(db_name)
     setup_db(cursor)
-    process_data(url, meta_data, file_name, cursor)
+    process_data(url, meta_data, cursor)
     close_db(conn)
 
 
