@@ -81,6 +81,7 @@ def get_metadata(url: str):
 #         and check to see if the database contains the test university that you just put there
 
 
+
 def open_db(filename: str) -> Tuple[sqlite3.Connection, sqlite3.Cursor]:
     db_connection = sqlite3.connect(filename)
     cursor = db_connection.cursor()  # get ready to read/write data
