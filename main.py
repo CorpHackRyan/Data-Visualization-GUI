@@ -17,7 +17,7 @@ def process_data(url: str, meta_from_main, export_filename, cursor: sqlite3.Curs
     final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
 
     for page_counter in range(meta_from_main[3]):
-    #for page_counter in range(1):  # testing purposes for just 1 page of data to export to db
+
         response = requests.get(final_url)
 
         if response.status_code != 200:
@@ -42,13 +42,9 @@ def process_data(url: str, meta_from_main, export_filename, cursor: sqlite3.Curs
             # Probably need to loop through each school_data to export each field-key matching
             # and insert into DB
 
-            #print(school_data["id"], school_data["school.name"], school_data["school.city"], school_data["2017.student.size"],
-            #      school_data["2018.student.size"], school_data["2017.earnings.3_yrs_after_completion.overall_count_over_poverty_line"],
-            #      school_data["2016.repayment.3_yr_repayment.overall"])
-
             school_tpl = (school_data["id"], school_data["school.name"], school_data["school.city"], school_data["2017.student.size"],
-                           school_data["2018.student.size"], school_data["2017.earnings.3_yrs_after_completion.overall_count_over_poverty_line"],
-                           school_data["2016.repayment.3_yr_repayment.overall"])
+                          school_data["2018.student.size"], school_data["2017.earnings.3_yrs_after_completion.overall_count_over_poverty_line"],
+                          school_data["2016.repayment.3_yr_repayment.overall"])
 
             print(school_tpl)
 
@@ -111,25 +107,9 @@ def setup_db(cursor: sqlite3.Cursor):
     );''')
 
 
-def db_insert(cursor: sqlite3.Cursor, ):
-    # cursor.execute('''INSERT INTO COURSE (course_prefix, course_number, cap, description)
-    # VALUES ('COMP', 151, 24, 'This is the intro course, you will learn to program, maybe for the first time')''')
-
-    # cursor.execute('''INSERT INTO COURSE (course_prefix, course_number, cap, description)
-    # VALUES ('COMP', 490, 20, 'This is the final course. You will get a chance to apply much of what you learned troughout the undergrad degree')''')
-
-    # cursor.execute('''INSERT INTO COURSE (course_prefix, course_number, cap, description)
-    # VALUES ('MATH', 130, 20, 'This course is changing to include much more on graph theory and number bases/systems')''')
-
-    # cursor.execute('''
-    return[]
-
-
-
-
 def main():
 
-    og_url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=school." \
+    og_url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=school."\
           "name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_count_over_" \
           "poverty_line,2016.repayment.3_yr_repayment.overall"
 
