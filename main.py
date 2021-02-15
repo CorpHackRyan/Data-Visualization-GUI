@@ -30,25 +30,13 @@ def process_data(url: str, meta_from_main, export_filename, cursor: sqlite3.Curs
         each_page_data = json_data["results"]
 
         for school_data in each_page_data:
-            # Sprint 1 - export data to txt file
-            # print(school_data)
-            # write_data(export_filename, school_data)
-
-            # Sprint 2 - export data to database
-            # write to database
-            # right here, school_data[dict has 7 entries]
-            # need to look at each list, reference the DB column name I have without ints', when matched,
-            # add it to that rows, using id as unique identifier
-            # Probably need to loop through each school_data to export each field-key matching
-            # and insert into
-            # DB
 
             school_tpl = (school_data["id"], school_data["school.name"], school_data["school.city"],
                           school_data["2018.student.size"], school_data["2017.student.size"],
                           school_data["2017.earnings.3_yrs_after_completion.overall_count_over_poverty_line"],
                           school_data["2016.repayment.3_yr_repayment.overall"])
 
-            print(school_tpl)
+            print(f"Page {page_counter} of {meta_from_main[3]} ->", school_tpl)
 
             sql = '''INSERT INTO school_export (school_id, school_name, school_city, student_size_2018, student_size_2017,
             earnings_3_yrs_after_completion_overall_count_over_poverty_line_2017, repayment_3_yr_repayment_overall_2016)
