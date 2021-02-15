@@ -6,7 +6,7 @@ import sqlite3
 from typing import Tuple
 
 
-def process_data(url: str, meta_from_main, export_filename):
+def process_data(url: str, meta_from_main, export_filename, cursor: sqlite3.Cursor):
     #  meta_from_main is a list with the following index descriptions
     #                 0 index = total results
     #                 1 index = current page
@@ -26,7 +26,6 @@ def process_data(url: str, meta_from_main, export_filename):
 
         json_data = response.json()
 
-
         # All the results on each page in a singular list returned
         each_page_data = json_data["results"]
 
@@ -43,17 +42,24 @@ def process_data(url: str, meta_from_main, export_filename):
             # Probably need to loop through each school_data to export each field-key matching
             # and insert into DB
 
-            print(school_data["school.name"])
+            #print(school_data["id"], school_data["school.name"], school_data["school.city"], school_data["2017.student.size"],
+            #      school_data["2018.student.size"], school_data["2017.earnings.3_yrs_after_completion.overall_count_over_poverty_line"],
+            #      school_data["2016.repayment.3_yr_repayment.overall"])
 
+            school_tpl = (school_data["id"], school_data["school.name"], school_data["school.city"], school_data["2017.student.size"],
+                           school_data["2018.student.size"], school_data["2017.earnings.3_yrs_after_completion.overall_count_over_poverty_line"],
+                           school_data["2016.repayment.3_yr_repayment.overall"])
 
+            print(school_tpl)
 
+            sql = '''INSERT INTO school_export (school_id, school_name, school_city, student_size_2018, student_size_2017, 
+            earnings_3_yrs_after_completion_overall_count_over_poverty_line_2017, repayment_3_yr_repayment_overall_2016) 
+            VALUES (?,?,?,?,?,?,?)'''
 
+            cursor.execute(sql, school_tpl)
 
-
-
-
-        page_counter += 1
-        final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
+    page_counter += 1
+    final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
 
 
 def write_data(filename, data_response):
@@ -94,34 +100,6 @@ def close_db(connection: sqlite3.Connection):
 
 
 def setup_db(cursor: sqlite3.Cursor):
-    cursor.execute('''CREATE TABLE IF NOT EXISTS students(
-    banner_id INTEGER PRIMARY KEY,
-    first_name TEXT NOT NULL,
-    last_name TEXT NOT NULL,
-    gpa REAL DEFAULT 0,
-    credits INTEGER DEFAULT 0
-    );''')
-
-    cursor.execute('''CREATE TABLE IF NOT EXISTS course(
-    course_prefix TEXT NOT NULL,
-    course_number INTEGER NOT NULL,
-    cap INTEGER DEFAULT 20,
-    description TEXT,
-    PRIMARY KEY(course_prefix, course_number)
-    );''')
-
-    cursor.execute('''CREATE TABLE IF NOT EXISTS school_data(
-    registration_id INTEGER PRIMARY KEY,
-    course_prefix TEXT NOT NULL,
-    course_number INTEGER NOT NULL,
-    banner_id INTEGER NOT NULL,
-    registration_date TEXT,
-    FOREIGN KEY (banner_id) REFERENCES student (banner_id)
-    ON DELETE CASCADE ON UPDATE NO ACTION,
-    FOREIGN KEY (course_prefix, course_number) REFERENCES courses (course_prefix, course_number)
-    ON DELETE CASCADE ON UPDATE NO ACTION
-    );''')
-
     cursor.execute('''CREATE TABLE IF NOT EXISTS school_export(
     school_id INTEGER PRIMARY KEY, 
     school_name TEXT,
@@ -133,7 +111,7 @@ def setup_db(cursor: sqlite3.Cursor):
     );''')
 
 
-def make_initial_courses(cursor: sqlite3.Cursor):
+def db_insert(cursor: sqlite3.Cursor, ):
     # cursor.execute('''INSERT INTO COURSE (course_prefix, course_number, cap, description)
     # VALUES ('COMP', 151, 24, 'This is the intro course, you will learn to program, maybe for the first time')''')
 
@@ -164,13 +142,10 @@ def main():
     db_name = "school_data.db"
 
     meta_data = get_metadata(url)
-    process_data(url, meta_data, file_name)
 
     conn, cursor = open_db(db_name)
-
     setup_db(cursor)
-    # make_initial_courses(cursor)
-    print(cursor)
+    process_data(url, meta_data, file_name, cursor)
     close_db(conn)
 
 
