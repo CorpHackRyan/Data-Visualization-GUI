@@ -40,7 +40,8 @@ def process_data(url: str, meta_from_main, export_filename, cursor: sqlite3.Curs
             # need to look at each list, reference the DB column name I have without ints', when matched,
             # add it to that rows, using id as unique identifier
             # Probably need to loop through each school_data to export each field-key matching
-            # and insert into DB
+            # and insert into
+            # DB
 
             school_tpl = (school_data["id"], school_data["school.name"], school_data["school.city"], school_data["2017.student.size"],
                           school_data["2018.student.size"], school_data["2017.earnings.3_yrs_after_completion.overall_count_over_poverty_line"],
