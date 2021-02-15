@@ -16,8 +16,8 @@ def process_data(url: str, meta_from_main, export_filename, cursor: sqlite3.Curs
     page_counter = 0
     final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
 
-    # for page_counter in range(meta_from_main[3]):
-    for page_counter in range(1):  # testing purposes for just 1 page of data to export to db
+    for page_counter in range(meta_from_main[3]):
+    #for page_counter in range(1):  # testing purposes for just 1 page of data to export to db
         response = requests.get(final_url)
 
         if response.status_code != 200:
@@ -58,8 +58,8 @@ def process_data(url: str, meta_from_main, export_filename, cursor: sqlite3.Curs
 
             cursor.execute(sql, school_tpl)
 
-    page_counter += 1
-    final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
+        page_counter += 1
+        final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
 
 
 def write_data(filename, data_response):
