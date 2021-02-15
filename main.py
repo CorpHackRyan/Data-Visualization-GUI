@@ -50,8 +50,8 @@ def process_data(url: str, meta_from_main, export_filename, cursor: sqlite3.Curs
 
             print(school_tpl)
 
-            sql = '''INSERT INTO school_export (school_id, school_name, school_city, student_size_2018, student_size_2017, 
-            earnings_3_yrs_after_completion_overall_count_over_poverty_line_2017, repayment_3_yr_repayment_overall_2016) 
+            sql = '''INSERT INTO school_export (school_id, school_name, school_city, student_size_2018, student_size_2017,
+            earnings_3_yrs_after_completion_overall_count_over_poverty_line_2017, repayment_3_yr_repayment_overall_2016)
             VALUES (?,?,?,?,?,?,?)'''
 
             cursor.execute(sql, school_tpl)
@@ -99,25 +99,21 @@ def close_db(connection: sqlite3.Connection):
 
 def setup_db(cursor: sqlite3.Cursor):
     cursor.execute('''CREATE TABLE IF NOT EXISTS school_export(
-    school_id INTEGER PRIMARY KEY, 
+    school_id INTEGER PRIMARY KEY,
     school_name TEXT,
     school_city TEXT,
     student_size_2018 INTEGER,
     student_size_2017 INTEGER,
     earnings_3_yrs_after_completion_overall_count_over_poverty_line_2017 INTEGER,
-    repayment_3_yr_repayment_overall_2016 INTEGER 
+    repayment_3_yr_repayment_overall_2016 INTEGER
     );''')
 
 
 def main():
 
-    # og_url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=school."\
-    #      "name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_count_over_" \
-    #      "poverty_line,2016.repayment.3_yr_repayment.overall"
-
     url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
-          "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_count_over_" \
-          "poverty_line,2016.repayment.3_yr_repayment.overall"
+          "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_" \
+          "count_over_poverty_line,2016.repayment.3_yr_repayment.overall"
 
     file_name = "school_export.txt"
 
