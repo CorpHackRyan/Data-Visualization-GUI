@@ -44,7 +44,7 @@ def process_data(url: str, meta_from_main, export_filename, cursor: sqlite3.Curs
             # DB
 
             school_tpl = (school_data["id"], school_data["school.name"], school_data["school.city"],
-                          school_data["2017.student.size"], school_data["2018.student.size"],
+                          school_data["2018.student.size"], school_data["2017.student.size"],
                           school_data["2017.earnings.3_yrs_after_completion.overall_count_over_poverty_line"],
                           school_data["2016.repayment.3_yr_repayment.overall"])
 
