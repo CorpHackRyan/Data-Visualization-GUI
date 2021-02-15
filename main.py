@@ -17,7 +17,6 @@ def process_data(url: str, meta_from_main, export_filename, cursor: sqlite3.Curs
     final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
 
     for page_counter in range(meta_from_main[3]):
-
         response = requests.get(final_url)
 
         if response.status_code != 200:
@@ -38,14 +37,17 @@ def process_data(url: str, meta_from_main, export_filename, cursor: sqlite3.Curs
 
             print(f"Page {page_counter} of {meta_from_main[3]} ->", school_tpl)
 
-            sql = '''INSERT INTO school_export (school_id, school_name, school_city, student_size_2018, student_size_2017,
-            earnings_3_yrs_after_completion_overall_count_over_poverty_line_2017, repayment_3_yr_repayment_overall_2016)
-            VALUES (?,?,?,?,?,?,?)'''
-
-            cursor.execute(sql, school_tpl)
+            insert_db(cursor, school_tpl)
 
         page_counter += 1
         final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
+
+
+def insert_db(cursor, school_tuple):
+    sql = '''INSERT INTO school_export (school_id, school_name, school_city, student_size_2018, student_size_2017,
+                earnings_3_yrs_after_completion_overall_count_over_poverty_line_2017, repayment_3_yr_repayment_overall_2016)
+                VALUES (?,?,?,?,?,?,?)'''
+    cursor.execute(sql, school_tuple)
 
 
 def write_data(filename, data_response):
