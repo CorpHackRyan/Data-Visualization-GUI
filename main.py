@@ -122,7 +122,19 @@ def setup_db(cursor: sqlite3.Cursor):
     ON DELETE CASCADE ON UPDATE NO ACTION
     );''')
 
-    cursor.execute('''CREATE TABLE IF NOT EXISTS ''')
+
+    cursor.execute('''CREATE TABLE IF NOT EXISTS school_export(
+    school_id INTEGER PRIMARY KEY, 
+    school_name TEXT,
+    school_city TEXT,
+    student_size_2018 INTEGER,
+    student_size_2017 INTEGER,
+    earnings_3_yrs_after_completion_overall_count_over_poverty_line_2017 INTEGER,
+    repayment_3_yr_repayment_overall_2016 INTEGER 
+    );''')
+
+    # school_id INTEGER PRIMARY KEY,should be primary, in this function
+
 
 #   ############################################################################################################
 
@@ -140,8 +152,8 @@ def main():
     file_name = "school_export.txt"
     db_name = "school_data.db"
 
-    meta_data = get_metadata(url)
-    process_data(url, meta_data, file_name)
+    # meta_data = get_metadata(url)
+    # process_data(url, meta_data, file_name)
 
     conn, cursor = open_db(db_name)
 
