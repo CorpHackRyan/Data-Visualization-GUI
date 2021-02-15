@@ -32,6 +32,17 @@ def process_data(url: str, meta_from_main, export_filename):
             print(school_data)
             write_data(export_filename, school_data)
 
+            # write to database
+            # right here, school_data[dict has 7 entries]
+            # need to look at each list, reference the DB column name I have without ints', when matched,
+            # add it to that rows, using id as unique identifier
+            # Probably need to loop through each school_data to export each field-key matching
+            # and insert into DB
+
+
+
+
+
         page_counter += 1
         final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
 
@@ -51,6 +62,8 @@ def get_metadata(url: str):
         return[]
 
     json_data = response.json()
+
+    print(json_data)
 
     total_results = json_data["metadata"]["total"]
     current_page = json_data["metadata"]["page"]
@@ -96,7 +109,7 @@ def setup_db(cursor: sqlite3.Cursor):
     PRIMARY KEY(course_prefix, course_number)
     );''')
 
-    cursor.execute('''CREATE TABLE IF NOT EXISTS class_list(
+    cursor.execute('''CREATE TABLE IF NOT EXISTS school_data(
     registration_id INTEGER PRIMARY KEY,
     course_prefix TEXT NOT NULL,
     course_number INTEGER NOT NULL,
@@ -108,23 +121,31 @@ def setup_db(cursor: sqlite3.Cursor):
     ON DELETE CASCADE ON UPDATE NO ACTION
     );''')
 
+    cursor.execute('''CREATE TABLE IF NOT EXISTS ''')
+
 #   ############################################################################################################
 
 
 def main():
 
-    url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=school." \
+    og_url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=school." \
           "name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_count_over_" \
+          "poverty_line,2016.repayment.3_yr_repayment.overall"
+
+    url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
+          "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_count_over_" \
           "poverty_line,2016.repayment.3_yr_repayment.overall"
 
     file_name = "school_export.txt"
     db_name = "school_data.db"
 
-    # meta_data = get_metadata(url)
-    # process_data(url, meta_data, file_name)
+    meta_data = get_metadata(url)
+    process_data(url, meta_data, file_name)
 
     conn, cursor = open_db(db_name)
 
+    setup_db(cursor)
+    print(cursor)
     close_db(conn)
 
 
