@@ -16,7 +16,8 @@ def process_data(url: str, meta_from_main, export_filename):
     page_counter = 0
     final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
 
-    for page_counter in range(meta_from_main[3]):
+    # for page_counter in range(meta_from_main[3]):
+    for page_counter in range(1):  # testing purposes for just 1 page of data to export to db
         response = requests.get(final_url)
 
         if response.status_code != 200:
@@ -25,19 +26,27 @@ def process_data(url: str, meta_from_main, export_filename):
 
         json_data = response.json()
 
+
         # All the results on each page in a singular list returned
         each_page_data = json_data["results"]
 
         for school_data in each_page_data:
-            print(school_data)
-            write_data(export_filename, school_data)
+            # Sprint 1 - export data to txt file
+            # print(school_data)
+            # write_data(export_filename, school_data)
 
+            # Sprint 2 - export data to database
             # write to database
             # right here, school_data[dict has 7 entries]
             # need to look at each list, reference the DB column name I have without ints', when matched,
             # add it to that rows, using id as unique identifier
             # Probably need to loop through each school_data to export each field-key matching
             # and insert into DB
+
+            print(school_data["school.name"])
+
+
+
 
 
 
@@ -71,15 +80,6 @@ def get_metadata(url: str):
     total_pages = total_results / results_per_page
 
     return [total_results, current_page, results_per_page, math.ceil(total_pages)]
-
-#   Scope of Sprint 2
-#   - Pragmatically (avoid duplicating code) setup a database if the table does not already exist
-#   - Take the data from the previous sprint and save it into the database
-#   - Write (2) automated tests:
-#     (1) it will be a method that retrieves the data from the web and assures we get more than 1000 dat items
-#     (2) create a new empty database, run our table creation method, then run the save data to database method
-#         and check to see if the database contains the test university that you just put there
-
 
 
 def open_db(filename: str) -> Tuple[sqlite3.Connection, sqlite3.Cursor]:
@@ -122,7 +122,6 @@ def setup_db(cursor: sqlite3.Cursor):
     ON DELETE CASCADE ON UPDATE NO ACTION
     );''')
 
-
     cursor.execute('''CREATE TABLE IF NOT EXISTS school_export(
     school_id INTEGER PRIMARY KEY, 
     school_name TEXT,
@@ -133,10 +132,21 @@ def setup_db(cursor: sqlite3.Cursor):
     repayment_3_yr_repayment_overall_2016 INTEGER 
     );''')
 
-    # school_id INTEGER PRIMARY KEY,should be primary, in this function
+
+def make_initial_courses(cursor: sqlite3.Cursor):
+    # cursor.execute('''INSERT INTO COURSE (course_prefix, course_number, cap, description)
+    # VALUES ('COMP', 151, 24, 'This is the intro course, you will learn to program, maybe for the first time')''')
+
+    # cursor.execute('''INSERT INTO COURSE (course_prefix, course_number, cap, description)
+    # VALUES ('COMP', 490, 20, 'This is the final course. You will get a chance to apply much of what you learned troughout the undergrad degree')''')
+
+    # cursor.execute('''INSERT INTO COURSE (course_prefix, course_number, cap, description)
+    # VALUES ('MATH', 130, 20, 'This course is changing to include much more on graph theory and number bases/systems')''')
+
+    # cursor.execute('''
+    return[]
 
 
-#   ############################################################################################################
 
 
 def main():
@@ -150,14 +160,16 @@ def main():
           "poverty_line,2016.repayment.3_yr_repayment.overall"
 
     file_name = "school_export.txt"
+
     db_name = "school_data.db"
 
-    # meta_data = get_metadata(url)
-    # process_data(url, meta_data, file_name)
+    meta_data = get_metadata(url)
+    process_data(url, meta_data, file_name)
 
     conn, cursor = open_db(db_name)
 
     setup_db(cursor)
+    # make_initial_courses(cursor)
     print(cursor)
     close_db(conn)
 
