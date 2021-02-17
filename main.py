@@ -5,6 +5,7 @@ import json
 import sqlite3
 from typing import Tuple
 from os import path
+import os
 
 
 def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
@@ -112,6 +113,10 @@ def main():
     db_name = "school_data.db"
 
     meta_data = get_metadata(url)
+
+    # If school_data.db exists, delete it. This ensures I can run this over and over.
+    if os.path.exists("school_data.db"):
+        os.remove("school_data.db")
 
     conn, cursor = open_db(db_name)
     setup_school_db(cursor)
