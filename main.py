@@ -4,7 +4,7 @@ import math
 import json
 import sqlite3
 from typing import Tuple
-
+from os import path
 
 def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
     #  meta_from_main is a list with the following index descriptions
@@ -77,6 +77,9 @@ def get_metadata(url: str):
 
 
 def open_db(filename: str) -> Tuple[sqlite3.Connection, sqlite3.Cursor]:
+
+    print("file exists:"+str(path.exists(filename)))
+    
     db_connection = sqlite3.connect(filename)
     cursor = db_connection.cursor()  # get ready to read/write data
     return db_connection, cursor
@@ -87,7 +90,7 @@ def close_db(connection: sqlite3.Connection):
     connection.close()
 
 
-def setup_db(cursor: sqlite3.Cursor):
+def setup_school_db(cursor: sqlite3.Cursor):
     cursor.execute('''CREATE TABLE IF NOT EXISTS school_export(
     school_id INTEGER PRIMARY KEY,
     school_name TEXT,
@@ -110,7 +113,7 @@ def main():
     meta_data = get_metadata(url)
 
     conn, cursor = open_db(db_name)
-    setup_db(cursor)
+    setup_school_db(cursor)
     process_data(url, meta_data, cursor)
     close_db(conn)
 
