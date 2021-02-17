@@ -63,7 +63,7 @@ def get_metadata(url: str):
 
     if response.status_code != 200:
         print(response.text)
-        return[]
+        exit(-1)
 
     json_data = response.json()
 
