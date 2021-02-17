@@ -6,6 +6,7 @@ import sqlite3
 from typing import Tuple
 from os import path
 
+
 def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
     #  meta_from_main is a list with the following index descriptions
     #                 0 index = total results
@@ -79,7 +80,7 @@ def get_metadata(url: str):
 def open_db(filename: str) -> Tuple[sqlite3.Connection, sqlite3.Cursor]:
 
     print("file exists:"+str(path.exists(filename)))
-    
+
     db_connection = sqlite3.connect(filename)
     cursor = db_connection.cursor()  # get ready to read/write data
     return db_connection, cursor
