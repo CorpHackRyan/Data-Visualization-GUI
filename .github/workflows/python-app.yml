@@ -20,6 +20,11 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.9
+    - name: Build Secrets
+      evn:
+        API_KEY: ${{secrets.api_key}}
+      run:
+        echo 'api_key = "'$API_KEY'"' >> secrets.py
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
