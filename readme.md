@@ -20,4 +20,4 @@ Where xxx is your API key for data.gov
 The database is laid out as a single table labeled 'school_export'. Inside this table is a school_id which is used as the primary key for the table. The data we collect is then imported into the database with columns that are labeled similar to the field parameters used to gather the information from the website.  
 
 MISSING FROM PROJECT: 
-- Nothing
+- Nothing.
