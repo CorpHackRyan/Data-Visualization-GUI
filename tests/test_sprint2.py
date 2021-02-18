@@ -31,10 +31,10 @@ def test_database():
 
     test_dbname = "test_db.db"
     conn, cursor = main.open_db(test_dbname)
-    #main.setup_school_db(cursor)
-    #test_meta_data = main.get_metadata(test_url)
-    #main.process_data(test_url, test_meta_data, cursor)
-    #main.close_db(conn)
+    main.setup_school_db(cursor)
+    test_meta_data = main.get_metadata(test_url)
+    main.process_data(test_url, test_meta_data, cursor)
+    main.close_db(conn)
 
     test_result = cursor.execute("""
                             SELECT *
