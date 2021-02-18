@@ -28,6 +28,7 @@ def test_database():
     }
 
     test_school_id = test_datadict["school_id"]
+
     test_dbname = "test_db.db"
     conn, cursor = main.open_db(test_dbname)
     #main.setup_school_db(cursor)
@@ -35,12 +36,9 @@ def test_database():
     #main.process_data(test_url, test_meta_data, cursor)
     #main.close_db(conn)
 
-#    2. The second test should create a new empty database, run your table creation function/method, then run your save data to
-#    database method then check to see that the database contains the test university that you just put there
-
     test_result = cursor.execute("""
-                            SELECT * 
-                            FROM school_export 
+                            SELECT *
+                            FROM school_export
                             WHERE school_id = ?""", (test_school_id,))
 
     for row in test_result:
@@ -51,4 +49,7 @@ def test_database():
               f'School student size 2017: {row[4]}\nTest DB Student size 2017: {test_datadict["student_size_2017"]}\n\n'
               f'2017 earnings over poverty: {row[5]}\nTest DB 2017 earnings over poverty: '
               f'{test_datadict["earnings_3_yrs_after_completion_overall_count_over_poverty_line_2017"]}\n\n'
-              f'3 yr repayment 2016: {row[6]}\nTest DB 3 yr repayment 2016: {test_datadict["repayment_3_yr_repayment_overall_2016"]}')
+              f'3 yr repayment 2016: {row[6]}\n'
+              f'Test DB 3 yr repayment 2016: {test_datadict["repayment_3_yr_repayment_overall_2016"]}')
+
+    assert row[0] == int(test_datadict["school_id"])
