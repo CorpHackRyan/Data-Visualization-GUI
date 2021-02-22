@@ -6,6 +6,7 @@ import sqlite3
 from typing import Tuple
 from os import path
 import os
+import openpyxl
 
 
 def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
@@ -104,6 +105,29 @@ def setup_school_db(cursor: sqlite3.Cursor):
     );''')
 
 
+def read_excel_data():
+    work_book = openpyxl.load_workbook(filename='test.xlsx')
+    #work_book = openpyxl.load_workbook(filename='state_M2019_dl.xlsx')
+
+    work_sheet = work_book.active
+
+    # BETTER SOLUTION: Get columns with specific titles so no matter what order they are in we can get correct data.
+    # Hard coded columns which contain the specific data we are looking for
+    # col 1=area_title,  col2=occ_code,  col3=occ_title,  col4=tot_emp,  col5=h_pct25,  col6=a_pct25
+    cols = [1, 7, 8, 10, 19, 24]
+
+    for row in work_sheet.iter_rows():
+        cells = [cell.value for (idx, cell) in enumerate(row) if (
+            idx in cols and cell.value is not None)]
+        print(cells)
+        print(cells[4])
+
+
+    #work_sheet.title = "WageJob_data"
+    #print(work_book.sheetnames)
+    #work_book.save("python_stage_wage.xlsx")
+
+
 def main():
     # comment
     url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
@@ -122,6 +146,8 @@ def main():
     # setup_school_db(cursor)
     # process_data(url, meta_data, cursor)
     close_db(conn)
+
+    read_excel_data()
 
 
 if __name__ == '__main__':
