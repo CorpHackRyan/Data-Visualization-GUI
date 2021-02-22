@@ -119,8 +119,8 @@ def main():
         os.remove("school_data.db")
 
     conn, cursor = open_db(db_name)
-    setup_school_db(cursor)
-    process_data(url, meta_data, cursor)
+    # setup_school_db(cursor)
+    # process_data(url, meta_data, cursor)
     close_db(conn)
 
 
