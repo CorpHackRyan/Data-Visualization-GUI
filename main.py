@@ -104,6 +104,16 @@ def setup_school_db(cursor: sqlite3.Cursor):
     repayment_3_yr_repayment_overall_2016 INTEGER
     );''')
 
+    cursor.execute('''CREATE TABLE IF NOT EXISTS jobdata_by_state(
+        unique_id INTEGER PRIMARY KEY,
+        area_title TEXT,
+        occ_code INTEGER,
+        occ_title TEXT,
+        tot_emp INTEGER,
+        h_pct25 INTEGER,
+        a_pct25 INTEGER
+        );''')
+
 
 def read_excel_data():
     work_book = openpyxl.load_workbook(filename='test.xlsx')
@@ -143,7 +153,7 @@ def main():
         os.remove("school_data.db")
 
     conn, cursor = open_db(db_name)
-    # setup_school_db(cursor)
+    setup_school_db(cursor)
     # process_data(url, meta_data, cursor)
     close_db(conn)
 
