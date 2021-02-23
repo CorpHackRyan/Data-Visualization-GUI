@@ -122,7 +122,7 @@ def setup_school_db(cursor: sqlite3.Cursor):
 
 
 def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
-    xls_filename = "test.xlsx"
+    #xls_filename = "test.xlsx"
     work_book = openpyxl.load_workbook(xls_filename)
     #work_book = openpyxl.load_workbook(filename='state_M2019_dl.xlsx')
 
@@ -163,7 +163,7 @@ def main():
 
     conn, cursor = open_db(db_name)
     setup_school_db(cursor)
-    # process_data(url, meta_data, cursor)
+    process_data(url, meta_data, cursor)
 
     read_excel_data(xls_filename, cursor)
 
