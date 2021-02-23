@@ -151,7 +151,7 @@ def main():
           "count_over_poverty_line,2016.repayment.3_yr_repayment.overall"
 
     db_name = "school_data.db"
-    xls_filename = "state_M2019_dl.xlsx"
+    # xls_filename = "state_M2019_dl.xlsx"
 
     meta_data = get_metadata(url)
 
@@ -161,7 +161,7 @@ def main():
 
     conn, cursor = open_db(db_name)
     setup_school_db(cursor)
-    # process_data(url, meta_data, cursor)
+    process_data(url, meta_data, cursor)
 
     # read_excel_data(xls_filename, cursor)
 
