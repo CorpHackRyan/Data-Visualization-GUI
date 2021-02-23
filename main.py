@@ -123,7 +123,6 @@ def setup_school_db(cursor: sqlite3.Cursor):
 
 def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
 
-    # xls_filename = "test.xlsx"
     work_book = openpyxl.load_workbook(xls_filename)
     work_sheet = work_book.active
 
@@ -137,6 +136,7 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
             idx in cols and cell.value is not None)]
         print(cells)
         cells.append(str(row[0].row))
+        # add if statement to check if it is zero, so we skip the first row from adding into DB
         print(cells)
         insert_xls_db(cursor, cells)
 
@@ -151,7 +151,7 @@ def main():
           "count_over_poverty_line,2016.repayment.3_yr_repayment.overall"
 
     db_name = "school_data.db"
-    # xls_filename = "state_M2019_dl.xlsx"
+    xls_filename = "state_M2019_dl.xlsx"
 
     meta_data = get_metadata(url)
 
@@ -163,7 +163,7 @@ def main():
     setup_school_db(cursor)
     process_data(url, meta_data, cursor)
 
-    # read_excel_data(xls_filename, cursor)
+    read_excel_data(xls_filename, cursor)
 
     close_db(conn)
 
