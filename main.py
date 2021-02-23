@@ -53,6 +53,12 @@ def insert_db(cursor, school_tuple):
     cursor.execute(sql, school_tuple)
 
 
+def insert_xls_db(cursor: sqlite3.Cursor, xls_tuple):
+    sql = '''INSERT INTO jobdata_by_state (area_title, occ_code, occ_title, tot_emp, h_pct25, a_pct25, unique_id)
+                VALUES (?,?,?,?,?,?,?)'''
+    cursor.execute(sql, xls_tuple)
+
+
 def write_data(filename, data_response):
     with open(filename, 'a') as export_file:
         json.dump(data_response, export_file)
@@ -115,8 +121,9 @@ def setup_school_db(cursor: sqlite3.Cursor):
         );''')
 
 
-def read_excel_data():
-    work_book = openpyxl.load_workbook(filename='test.xlsx')
+def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
+    xls_filename = "test.xlsx"
+    work_book = openpyxl.load_workbook(xls_filename)
     #work_book = openpyxl.load_workbook(filename='state_M2019_dl.xlsx')
 
     work_sheet = work_book.active
@@ -130,8 +137,9 @@ def read_excel_data():
         cells = [cell.value for (idx, cell) in enumerate(row) if (
             idx in cols and cell.value is not None)]
         print(cells)
-        print(cells[4])
-
+        cells.append(str(row[0].row))
+        print(cells)
+        insert_xls_db(cursor, cells)
 
     #work_sheet.title = "WageJob_data"
     #print(work_book.sheetnames)
@@ -145,6 +153,7 @@ def main():
           "count_over_poverty_line,2016.repayment.3_yr_repayment.overall"
 
     db_name = "school_data.db"
+    xls_filename = "state_M2019_dl.xlsx"
 
     meta_data = get_metadata(url)
 
@@ -155,9 +164,10 @@ def main():
     conn, cursor = open_db(db_name)
     setup_school_db(cursor)
     # process_data(url, meta_data, cursor)
-    close_db(conn)
 
-    read_excel_data()
+    read_excel_data(xls_filename, cursor)
+
+    close_db(conn)
 
 
 if __name__ == '__main__':
