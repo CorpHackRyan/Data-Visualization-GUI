@@ -122,10 +122,9 @@ def setup_school_db(cursor: sqlite3.Cursor):
 
 
 def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
-    #xls_filename = "test.xlsx"
-    work_book = openpyxl.load_workbook(xls_filename)
-    #work_book = openpyxl.load_workbook(filename='state_M2019_dl.xlsx')
 
+    # xls_filename = "test.xlsx"
+    work_book = openpyxl.load_workbook(xls_filename)
     work_sheet = work_book.active
 
     # BETTER SOLUTION: Get columns with specific titles so no matter what order they are in we can get correct data.
@@ -141,9 +140,8 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
         print(cells)
         insert_xls_db(cursor, cells)
 
-    #work_sheet.title = "WageJob_data"
-    #print(work_book.sheetnames)
-    #work_book.save("python_stage_wage.xlsx")
+    # work_sheet.title = "WageJob_data"
+    # work_book.save("python_stage_wage.xlsx")
 
 
 def main():
@@ -163,9 +161,9 @@ def main():
 
     conn, cursor = open_db(db_name)
     setup_school_db(cursor)
-    process_data(url, meta_data, cursor)
+    # process_data(url, meta_data, cursor)
 
-    read_excel_data(xls_filename, cursor)
+    # read_excel_data(xls_filename, cursor)
 
     close_db(conn)
 
