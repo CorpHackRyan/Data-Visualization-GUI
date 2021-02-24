@@ -128,17 +128,37 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
 
     # BETTER SOLUTION: Get columns with specific titles so no matter what order they are in we can get correct data.
     # Hard coded columns which contain the specific data we are looking for
-    # col 1=area_title,  col2=occ_code,  col3=occ_title,  col4=tot_emp,  col5=h_pct25,  col6=a_pct25
-    cols = [1, 7, 8, 10, 19, 24]
+    # col 1=area_title,  col7=occ_code,  col8=occ_title, col9=o_group, col10=tot_emp,  col19=h_pct25,  col24=a_pct25
+    cols = [1, 7, 8, 9, 10, 19, 24]
+    unique_id_counter = 1
 
     for row in work_sheet.iter_rows():
+
         cells = [cell.value for (idx, cell) in enumerate(row) if (
             idx in cols and cell.value is not None)]
-        print(cells)
-        cells.append(str(row[0].row))
+            #print(cells)
+
+        # skip header row in excel file
+        if row[0].row == 1:
+            #print("skip this row!")
+            pass
+        else:
+            if cells[3] == "major":
+                print(cells)
+
+                # use current row number as unique identifier for db row
+                cells.append(unique_id_counter)
+                unique_id_counter += 1
+                print(cells)
+
+        # cells.append(int(row[0].row) - 1)
         # add if statement to check if it is zero, so we skip the first row from adding into DB
-        print(cells)
-        insert_xls_db(cursor, cells)
+        #if row[0].row == "1":
+        #    continue
+        #else:
+        #    cells.append(str(row[0].row)+1)
+        #    print(cells)
+        #    insert_xls_db(cursor, cells)
 
     # work_sheet.title = "WageJob_data"
     # work_book.save("python_stage_wage.xlsx")
@@ -152,6 +172,7 @@ def main():
 
     db_name = "school_data.db"
     xls_filename = "state_M2019_dl.xlsx"
+    xls_filename = "test.xlsx"
 
     meta_data = get_metadata(url)
 
@@ -161,7 +182,7 @@ def main():
 
     conn, cursor = open_db(db_name)
     setup_school_db(cursor)
-    process_data(url, meta_data, cursor)
+    # process_data(url, meta_data, cursor)
 
     read_excel_data(xls_filename, cursor)
 
