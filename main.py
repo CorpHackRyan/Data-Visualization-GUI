@@ -163,12 +163,12 @@ def main():
     meta_data = get_metadata(url)
 
     # If school_data.db exists, delete it. This ensures I can run this over and over.
-    if os.path.exists("school_data.db"):
-        os.remove("school_data.db")
+    if os.path.exists(db_name):
+        os.remove(db_name)
 
     conn, cursor = open_db(db_name)
     setup_school_db(cursor)
-    process_data(url, meta_data, cursor)
+    #process_data(url, meta_data, cursor)
 
     read_excel_data(xls_filename, cursor)
 

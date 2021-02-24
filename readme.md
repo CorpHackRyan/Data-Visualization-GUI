@@ -1,9 +1,9 @@
-    Last updated: 2/17/21
+    Last updated: 2/24/21
 
-    Sprint2 (for Project 1)
+    Sprint3 (for Project 1)
     Authored by: Ryan O'Connor
 
-roconnor-Sprint2 is a program that takes the data we have requested from a given URL with specific field parameters in it. It will then create a local database and import the data it has collected from our data.gov link.
+roconnor-Sprint3 is a program that navigates a local copy of a MS-Excel through the use of the openpyxl library in Python. It parses through the data with specific parameters and exports that data row by row to a new table in an already existing database.
 
     INSTALL DIRECTIONS
 
@@ -19,5 +19,8 @@ Where xxx is your API key for data.gov
 
 The database is laid out as a single table labeled 'school_export'. Inside this table is a school_id which is used as the primary key for the table. The data we collect is then imported into the database with columns that are labeled similar to the field parameters used to gather the information from the website.  
 
-MISSING FROM PROJECT: 
-- Nothing.
+REQUIREMENTS:
+- dependencies: openpyxl, requests, urllib
+- api key,
+- internet connection
+- 
