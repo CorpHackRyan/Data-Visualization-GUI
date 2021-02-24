@@ -136,32 +136,18 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
 
         cells = [cell.value for (idx, cell) in enumerate(row) if (
             idx in cols and cell.value is not None)]
-            #print(cells)
 
-        # skip header row in excel file
+        # skip header row in excel file if row 1
         if row[0].row == 1:
-            #print("skip this row!")
             pass
         else:
             if cells[3] == "major":
-                print(cells)
-
                 # use current row number as unique identifier for db row
                 cells.append(unique_id_counter)
                 unique_id_counter += 1
+                del cells[3]
                 print(cells)
-
-        # cells.append(int(row[0].row) - 1)
-        # add if statement to check if it is zero, so we skip the first row from adding into DB
-        #if row[0].row == "1":
-        #    continue
-        #else:
-        #    cells.append(str(row[0].row)+1)
-        #    print(cells)
-        #    insert_xls_db(cursor, cells)
-
-    # work_sheet.title = "WageJob_data"
-    # work_book.save("python_stage_wage.xlsx")
+                insert_xls_db(cursor, cells)
 
 
 def main():
@@ -172,7 +158,7 @@ def main():
 
     db_name = "school_data.db"
     xls_filename = "state_M2019_dl.xlsx"
-    xls_filename = "test.xlsx"
+    # xls_filename = "test.xlsx"
 
     meta_data = get_metadata(url)
 
