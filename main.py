@@ -9,7 +9,6 @@ import os
 import openpyxl
 
 
-
 def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
     #  meta_from_main is a list with the following index descriptions
     #                 0 index = total results
