@@ -1,6 +1,7 @@
 import main
 import urllib
 
+
 def test_get_meta_data():
     test_url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
           "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_" \
@@ -58,23 +59,22 @@ def test_database():
 
 def test_xlsx_read():
 
-    # Make sure our read from excel file works properly #
-
-    # Random row of data with columns we need from actual excel file
+    # Original excel document contains 22 'Massachusetts' major entries
     test_assertion_data = "Massachusetts"
     counter = 0
     times_assertion_data_appears = 22
 
     test_dbname = "test_db.db"
     test_xls_filename = "state_M2019_dl.xlsx"
+    xls_link = "https://webhost.bridgew.edu/jsantore/Spring2021/Capstone/state_M2019_dl.xlsx"
 
-    #xls_link = "https://webhost.bridgew.edu/jsantore/Spring2021/Capstone/state_M2019_dl.xlsx"
-    #urllib.request.urlretrieve(xls_link, test_xls_filename)
+    urllib.request.urlretrieve(xls_link, test_xls_filename)
 
     conn, cursor = main.open_db(test_dbname)
-    #main.setup_school_db(cursor)
-    #main.read_excel_data(test_xls_filename, cursor)
+    main.setup_school_db(cursor)
+    main.read_excel_data(test_xls_filename, cursor)
 
+    # Execute select statement for all rows that contain "Massachusetts"
     test_result = cursor.execute("""
                                SELECT *
                                FROM jobdata_by_state
@@ -84,7 +84,8 @@ def test_xlsx_read():
         print(*row)
         counter += 1
 
-    # Original excel document contains 22 'Massachusetts' entries
+    # If test passes, we should have read in all entries from the xlsx file, exported them to the db, and then
+    # read in all data containing 'Massachusetts' (22 total from xlsx file) from the db.
     assert counter == times_assertion_data_appears
 
     main.close_db(conn)
