@@ -58,7 +58,7 @@ def test_database():
 
 def test_xlsx_read():
 
-    # Make sure our read from excel file works properly
+    # Make sure our read from excel file works properly #
 
     # So read  use the function from main to read the excel. it will then create the xcel file
     # then, tak ea row of data of that file, and compare it to the data we have stored in our dict
