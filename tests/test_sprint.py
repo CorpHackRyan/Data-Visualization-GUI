@@ -112,14 +112,4 @@ def test_table_exists():
 
     assert(table_exists == 1)
 
-
-
-
-
-
-
-
-
-
-
     main.close_db(conn)
