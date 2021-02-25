@@ -78,24 +78,25 @@ def test_xlsx_read():
     test_dbname = "test_db.db"
     test_xls_filename = "state_M2019_dl.xlsx"
 
-    xls_link = "https://webhost.bridgew.edu/jsantore/Spring2021/Capstone/state_M2019_dl.xlsx"
-    urllib.request.urlretrieve(xls_link, test_xls_filename)
+    #xls_link = "https://webhost.bridgew.edu/jsantore/Spring2021/Capstone/state_M2019_dl.xlsx"
+    #urllib.request.urlretrieve(xls_link, test_xls_filename)
 
     conn, cursor = main.open_db(test_dbname)
-    main.setup_school_db(cursor)
-    main.read_excel_data(test_xls_filename, cursor)
+    #main.setup_school_db(cursor)
+    #main.read_excel_data(test_xls_filename, cursor)
 
-    # test_result = cursor.execute("""
-    #                           SELECT *
-    #                           FROM jobdata_by_state
-    #                           WHERE school_id = ?""", (test_school_id,))
+    test_result = cursor.execute("""
+                               SELECT *
+                               FROM jobdata_by_state
+                               WHERE area_title = ?""", (test_datadict["area_title"],))
 
-    #test_school_id = test_datadict["school_id"]
-    #test_meta_data = main.get_metadata(test_url)
-    #main.process_data(test_url, test_meta_data, cursor)
+    for row in test_result:
+        print(*row)
+    # test_school_id = test_datadict["school_id"]
+    # test_meta_data = main.get_metadata(test_url)
+    # main.process_data(test_url, test_meta_data, cursor)
 
-
-    #for row in test_result:
+    # for row in test_result:
     #    print(f'School id: {row[0]}  \nTest DB school id: {test_datadict["school_id"]} \n\n'
     #          f'School name: {row[1]}\nTest DB school name: {test_datadict["school_name"]}\n\n'
     #          f'School city: {row[2]}\nTest DB school city: {test_datadict["school_city"]}\n\n'
@@ -106,7 +107,7 @@ def test_xlsx_read():
     #          f'3 yr repayment 2016: {row[6]}\n'
     #          f'Test DB 3 yr repayment 2016: {test_datadict["repayment_3_yr_repayment_overall_2016"]}')
 
-    #assert row[0] == int(test_datadict["school_id"])
+    # assert row[0] == int(test_datadict["school_id"])
 
     main.close_db(conn)
 
