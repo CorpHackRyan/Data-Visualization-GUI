@@ -89,3 +89,37 @@ def test_xlsx_read():
     assert counter == times_assertion_data_appears
 
     main.close_db(conn)
+
+
+def test_table_exists():
+    test_dbname = "test_db.db"
+    conn, cursor = main.open_db(test_dbname)
+
+    table_name = "jobdata_by_state"
+
+    test_result = cursor.execute("""
+                                   SELECT count(*)
+                                   FROM sqlite_master
+                                   WHERE type='table' AND name = ?""", (table_name,))
+
+    # If cursor returns a 1, table exists.
+    table_exists = test_result.fetchone()[0]
+
+    if table_exists == 1:
+        print(f"Table {table_name} exists.")
+    else:
+        print(f"Table {table_name} does not exist.")
+
+    assert(table_exists == 1)
+
+
+
+
+
+
+
+
+
+
+
+    main.close_db(conn)
