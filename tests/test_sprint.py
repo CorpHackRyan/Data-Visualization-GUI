@@ -91,7 +91,7 @@ def test_xlsx_read():
     main.close_db(conn)
 
 
-def test_table_exists():
+def test_new_table_exists():
     test_dbname = "test_db.db"
     conn, cursor = main.open_db(test_dbname)
 
@@ -104,6 +104,29 @@ def test_table_exists():
 
     # If cursor returns a 1, table exists.
     table_exists = test_result.fetchone()[0]
+
+    if table_exists == 1:
+        print(f"Table {table_name} exists.")
+    else:
+        print(f"Table {table_name} does not exist.")
+
+    assert(table_exists == 1)
+
+    main.close_db(conn)
+
+
+def test_old_table_exists():
+    test_dbname = "test_db.db"
+    conn, cursor = main.open_db(test_dbname)
+
+    table_name = "school_export"
+
+    result = cursor.execute("""    SELECT count(*)
+                                   FROM sqlite_master
+                                   WHERE type='table' AND name = ?""", (table_name,))
+
+    # If cursor returns a 1, table exists.
+    table_exists = result.fetchone()[0]
 
     if table_exists == 1:
         print(f"Table {table_name} exists.")
