@@ -1,6 +1,7 @@
 import main
 import urllib
 
+
 def test_get_meta_data():
     test_url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
           "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_" \
@@ -76,27 +77,24 @@ def test_xlsx_read():
     }
 
     test_dbname = "test_db.db"
-    xls_filename = "state_M2019_dl.xlsx"
-    #xls_filename = "test.xlsx"
+    test_xls_filename = "state_M2019_dl.xlsx"
 
     xls_link = "https://webhost.bridgew.edu/jsantore/Spring2021/Capstone/state_M2019_dl.xlsx"
-    urllib.request.urlretrieve(xls_link, xls_filename)
+    urllib.request.urlretrieve(xls_link, test_xls_filename)
 
+    conn, cursor = main.open_db(test_dbname)
+    main.setup_school_db(cursor)
+    main.read_excel_data(test_xls_filename, cursor)
 
-    #conn, cursor = main.open_db(test_dbname)
-
-    #main.setup_school_db(cursor)
-
-    #main.read_excel_data(xls_filename, cursor)
-
+    # test_result = cursor.execute("""
+    #                           SELECT *
+    #                           FROM jobdata_by_state
+    #                           WHERE school_id = ?""", (test_school_id,))
 
     #test_school_id = test_datadict["school_id"]
     #test_meta_data = main.get_metadata(test_url)
     #main.process_data(test_url, test_meta_data, cursor)
-    #test_result = cursor.execute("""
-    #                           SELECT *
-    #                           FROM school_export
-    #                           WHERE school_id = ?""", (test_school_id,))
+
 
     #for row in test_result:
     #    print(f'School id: {row[0]}  \nTest DB school id: {test_datadict["school_id"]} \n\n'
@@ -111,7 +109,7 @@ def test_xlsx_read():
 
     #assert row[0] == int(test_datadict["school_id"])
 
-    #main.close_db(conn)
+    main.close_db(conn)
 
 
 
