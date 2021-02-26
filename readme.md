@@ -1,9 +1,19 @@
-    Last updated: 2/24/21
+    Last updated: 2/25/21 - 11:45PM - Final Submission
 
     Sprint3 (for Project 1)
     Authored by: Ryan O'Connor
 
-roconnor-Sprint3 is a program that navigates a local copy of a MS-Excel through the use of the openpyxl library in Python. It parses through the data with specific parameters and exports that data row by row to a new table in an already existing database.
+roconnor-Sprint3 is a program that will connect to api.data.gov through the API and request information about universities. It then takes that data and exports it into a newly created database. Next, it navigates through a local copy of a MS-Excel file (.xlsx) through the use of the openpyxl library in Python. It parses through the data with specific parameters and exports that data into to a new table in the already existing database.
+
+      REQUIREMENTS TO RUN
+- dependencies: openpyxl, requests
+
+- api key for data.gov in secrets
+
+  
+    DATABASE LAYOUT
+
+The database created gets two tables. One is labeled 'school_export' which is populated from the api.dat.gov requests. The second table is called 'jobdata_by_state' and contains information about state wages and is populated from data collected in the xlsx file.   
 
     INSTALL DIRECTIONS
 
@@ -14,13 +24,3 @@ Your secrets.py file should look like:
     
 Where xxx is your API key for data.gov
 
-
-    DATABASE LAYOUT
-
-The database is laid out as a single table labeled 'school_export'. Inside this table is a school_id which is used as the primary key for the table. The data we collect is then imported into the database with columns that are labeled similar to the field parameters used to gather the information from the website.  
-
-REQUIREMENTS:
-- dependencies: openpyxl, requests, urllib
-- api key,
-- internet connection
-- 

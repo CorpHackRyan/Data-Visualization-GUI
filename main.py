@@ -158,7 +158,6 @@ def main():
 
     db_name = "school_data.db"
     xls_filename = "state_M2019_dl.xlsx"
-    # xls_filename = "test.xlsx"
 
     meta_data = get_metadata(url)
 
@@ -167,9 +166,9 @@ def main():
         os.remove(db_name)
 
     conn, cursor = open_db(db_name)
+
     setup_school_db(cursor)
     process_data(url, meta_data, cursor)
-
     read_excel_data(xls_filename, cursor)
 
     close_db(conn)
