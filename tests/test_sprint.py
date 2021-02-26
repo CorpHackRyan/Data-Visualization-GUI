@@ -136,3 +136,20 @@ def test_old_table_exists():
     assert(table_exists == 1)
 
     main.close_db(conn)
+
+
+def test_insert_xls_db():
+
+    test_data = ("Test_area_title", 0, "Test_occ_title", 0, 0, 0, "123456789")
+
+    test_dbname = "test_db.db"
+    conn, cursor = main.open_db(test_dbname)
+
+    sql = '''INSERT INTO jobdata_by_state (area_title, occ_code, occ_title, tot_emp, h_pct25, a_pct25, unique_id)
+                VALUES (?,?,?,?,?,?,?)'''
+
+    main.insert_xls_db(cursor, test_data)
+
+    #assert -> selected case matches pre-written case
+
+    main.close_db(conn)
