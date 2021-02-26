@@ -134,7 +134,6 @@ def test_old_table_exists():
         print(f"Table {table_name} does not exist.")
 
     assert(table_exists == 1)
-
     main.close_db(conn)
 
 
