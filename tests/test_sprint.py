@@ -139,17 +139,23 @@ def test_old_table_exists():
 
 
 def test_insert_xls_db():
-
+    # (area_title, occ_code, occ_title, tot_emp, h_pct25, a_pct25, unique_id)
     test_data = ("Test_area_title", 0, "Test_occ_title", 0, 0, 0, "123456789")
 
     test_dbname = "test_db.db"
     conn, cursor = main.open_db(test_dbname)
 
-    sql = '''INSERT INTO jobdata_by_state (area_title, occ_code, occ_title, tot_emp, h_pct25, a_pct25, unique_id)
-                VALUES (?,?,?,?,?,?,?)'''
-
     main.insert_xls_db(cursor, test_data)
 
-    #assert -> selected case matches pre-written case
+    # read back what we just wrote to the database
+    test_result = cursor.execute("""
+                                  SELECT *
+                                  FROM jobdata_by_state
+                                  WHERE area_title = ?""", (test_data[0],))
 
+    for row in test_result:
+        print(*row)
+
+    # assert -> selected case matches previous test_data case
+    assert str(row[0]) == test_data[6]
     main.close_db(conn)
