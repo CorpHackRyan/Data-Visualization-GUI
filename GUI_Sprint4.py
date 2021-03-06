@@ -15,7 +15,7 @@ class Comp490DemoWindow(QWidget):
         # self.list_control = display_list
         # self.put_data_in_list(self.data)
         # display_list.resize(400,350)
-        self.setGeometry(100,100, 400, 500)
+        self.setGeometry(100, 100, 400, 500)
         quit_button = QPushButton("Exit", self)
         quit_button.clicked.connect(QApplication.instance().quit)
         quit_button.resize(quit_button.sizeHint())
