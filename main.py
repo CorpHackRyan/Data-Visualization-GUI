@@ -7,6 +7,9 @@ from typing import Tuple
 from os import path
 import os
 import openpyxl
+import sys
+import PyQt6
+import PySide6.QtWidgets
 
 
 def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
@@ -168,9 +171,14 @@ def main():
 
     conn, cursor = open_db(db_name)
 
-    setup_school_db(cursor)
-    process_data(url, meta_data, cursor)
-    read_excel_data(xls_filename, cursor)
+    # setup_school_db(cursor)
+    # process_data(url, meta_data, cursor)
+    # read_excel_data(xls_filename, cursor)
+
+    # GUI Portion of app
+    # qt_app = PySide6.QtWidgets.QApplication(sys.argv)  # sys.argv is the list of command line arguments
+    # my_window = GUI_Sprint4.MainWindow()
+    # sys.exit(qt_app.exec_())
 
     close_db(conn)
 

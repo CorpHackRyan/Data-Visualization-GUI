@@ -1,3 +1,4 @@
 requests
 openpyxl
 pyside6
+pyqt6

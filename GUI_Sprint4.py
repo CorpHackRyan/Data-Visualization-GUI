@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QWidget, QPushButton, QListWidget, QApplication, Q
 from typing import List, Dict
 
 
-class Comp490DemoWindow(QWidget):
+class MainWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.data = 0
