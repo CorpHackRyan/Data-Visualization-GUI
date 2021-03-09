@@ -9,7 +9,7 @@ import os
 import openpyxl
 import sys
 import PyQt6
-import PySide6.QtWidgets
+# import PySide6.QtWidgets
 
 
 def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
@@ -23,7 +23,8 @@ def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
     # final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
     final_url = f"{url}&api_key={secrets.api_key}&page=0"  # for testing purposes
 
-    for page_counter in range(meta_from_main[3]):
+    #for page_counter in range(meta_from_main[3]):
+    for page_counter in range(1):
         response = requests.get(final_url)
 
         if response.status_code != 200:
@@ -156,9 +157,14 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
 
 def main():
     # comment
+    # old_url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
+    #       "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_" \
+    #       "count_over_poverty_line,2016.repayment.3_yr_repayment.overall"
+
     url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
           "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_" \
-          "count_over_poverty_line,2016.repayment.3_yr_repayment.overall"
+          "count_over_poverty_line,2016.repayment.3_yr_repayment.overall,school.state,2016.repayment.repayment_cohort.3_" \
+          "year_declining_balance"
 
     db_name = "school_data.db"
     xls_filename = "state_M2019_dl.xlsx"
@@ -171,9 +177,9 @@ def main():
 
     conn, cursor = open_db(db_name)
 
-    # setup_school_db(cursor)
-    # process_data(url, meta_data, cursor)
-    # read_excel_data(xls_filename, cursor)
+    setup_school_db(cursor)
+    process_data(url, meta_data, cursor)
+    read_excel_data(xls_filename, cursor)
 
     # GUI Portion of app
     # qt_app = PySide6.QtWidgets.QApplication(sys.argv)  # sys.argv is the list of command line arguments
