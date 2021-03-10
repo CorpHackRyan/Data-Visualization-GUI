@@ -112,7 +112,9 @@ def setup_school_db(cursor: sqlite3.Cursor):
     student_size_2018 INTEGER,
     student_size_2017 INTEGER,
     earnings_3_yrs_after_completion_overall_count_over_poverty_line_2017 INTEGER,
-    repayment_3_yr_repayment_overall_2016 INTEGER
+    repayment_3_yr_repayment_overall_2016 INTEGER,
+    school_state TEXT,
+    repayment_repayment_cohort_3_year_declining_balance_2016 INTEGER
     );''')
 
     cursor.execute('''CREATE TABLE IF NOT EXISTS jobdata_by_state(
@@ -171,7 +173,7 @@ def main():
 
     meta_data = get_metadata(url)
 
-    # If school_data.db exists, delete it. This ensures I can run this over and over.
+    # Removing the old db ensures I can run this over and over.
     if os.path.exists(db_name):
         os.remove(db_name)
 
@@ -179,7 +181,7 @@ def main():
 
     setup_school_db(cursor)
     process_data(url, meta_data, cursor)
-    read_excel_data(xls_filename, cursor)
+    # read_excel_data(xls_filename, cursor)
 
     # GUI Portion of app
     # qt_app = PySide6.QtWidgets.QApplication(sys.argv)  # sys.argv is the list of command line arguments
