@@ -24,7 +24,7 @@ def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
     final_url = f"{url}&api_key={secrets.api_key}&page=0"  # for testing purposes
 
     #for page_counter in range(meta_from_main[3]):
-    for page_counter in range(1):
+    for page_counter in range(10):
         response = requests.get(final_url)
 
         if response.status_code != 200:
@@ -41,7 +41,8 @@ def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
             school_tpl = (school_data["id"], school_data["school.name"], school_data["school.city"],
                           school_data["2018.student.size"], school_data["2017.student.size"],
                           school_data["2017.earnings.3_yrs_after_completion.overall_count_over_poverty_line"],
-                          school_data["2016.repayment.3_yr_repayment.overall"])
+                          school_data["2016.repayment.3_yr_repayment.overall"], school_data["school.state"],
+                          school_data["2016.repayment.repayment_cohort.3_year_declining_balance"])
 
             print(f"Page {page_counter} of {meta_from_main[3]} ->", school_tpl)
 
@@ -53,8 +54,9 @@ def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
 
 def insert_db(cursor, school_tuple):
     sql = '''INSERT INTO school_export (school_id, school_name, school_city, student_size_2018, student_size_2017,
-                earnings_3_yrs_after_completion_overall_count_over_poverty_line_2017, repayment_3_yr_repayment_overall_2016)
-                VALUES (?,?,?,?,?,?,?)'''
+                earnings_3_yrs_after_completion_overall_count_over_poverty_line_2017, repayment_3_yr_repayment_overall_2016,
+                school_state, repayment_repayment_cohort_3_year_declining_balance_2016) 
+                VALUES (?,?,?,?,?,?,?,?,?)'''
     cursor.execute(sql, school_tuple)
 
 
