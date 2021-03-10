@@ -4,8 +4,9 @@ import urllib
 
 def test_get_meta_data():
     test_url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
-          "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_" \
-          "count_over_poverty_line,2016.repayment.3_yr_repayment.overall"
+               "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_" \
+               "count_over_poverty_line,2016.repayment.3_yr_repayment.overall,school.state,2016.repayment.repayment_cohort.3_" \
+               "year_declining_balance"
 
     results = main.get_metadata(test_url)
     assert results[0] > 1000
@@ -16,6 +17,11 @@ def test_database():
               "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_" \
               "count_over_poverty_line,2016.repayment.3_yr_repayment.overall"
 
+    test_url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
+               "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_" \
+               "count_over_poverty_line,2016.repayment.3_yr_repayment.overall,school.state,2016.repayment.repayment_cohort.3_" \
+               "year_declining_balance"
+
     # This dict below came from the above url and will be used to compare against the data inserted into the new db
     # via the test below
     test_datadict = {
@@ -25,7 +31,9 @@ def test_database():
         "student_size_2018": "9312",
         "student_size_2017": "9390",
         "earnings_3_yrs_after_completion_overall_count_over_poverty_line_2017":  "2137",
-        "repayment_3_yr_repayment_overall_2016": "4403"
+        "repayment_3_yr_repayment_overall_2016": "4403",
+        "school_state": "MA",
+        "repayment_repayment_cohort_3_year_declining_balance_2016": "0.6359300477"
     }
 
     test_school_id = test_datadict["school_id"]
@@ -50,7 +58,9 @@ def test_database():
               f'2017 earnings over poverty: {row[5]}\nTest DB 2017 earnings over poverty: '
               f'{test_datadict["earnings_3_yrs_after_completion_overall_count_over_poverty_line_2017"]}\n\n'
               f'3 yr repayment 2016: {row[6]}\n'
-              f'Test DB 3 yr repayment 2016: {test_datadict["repayment_3_yr_repayment_overall_2016"]}')
+              f'Test DB 3 yr repayment 2016: {test_datadict["repayment_3_yr_repayment_overall_2016"]}\n'
+              f'School state: {row[7]}\nTest DB School state: {test_datadict["school_state"]}\n\n'
+              f'2016 Repayment cohort 3 yr declining balance: {row[8]}\n')
 
     assert row[0] == int(test_datadict["school_id"])
 
