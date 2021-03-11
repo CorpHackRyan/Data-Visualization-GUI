@@ -8,8 +8,10 @@ from os import path
 import os
 import openpyxl
 import sys
-from PyQt6.QtWidgets import QMessageBox
-# import PySide6.QtWidgets
+#import GUI_Sprint4
+from PySide2 import QtWidgets
+
+
 
 
 def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
@@ -23,8 +25,8 @@ def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
     final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
     # final_url = f"{url}&api_key={secrets.api_key}&page=0"  # for testing purposes
 
-    for page_counter in range(meta_from_main[3]):
-    #for page_counter in range(10):
+    #for page_counter in range(meta_from_main[3]):
+    for page_counter in range(5):
         response = requests.get(final_url)
 
         if response.status_code != 200:
@@ -181,9 +183,9 @@ def main():
 
     conn, cursor = open_db(db_name)
 
-    setup_school_db(cursor)
-    process_data(url, meta_data, cursor)
-    # read_excel_data(xls_filename, cursor)
+    #setup_school_db(cursor)
+    #process_data(url, meta_data, cursor)
+    #read_excel_data(xls_filename, cursor)
 
     # GUI Portion of app
     # qt_app = PySide6.QtWidgets.QApplication(sys.argv)  # sys.argv is the list of command line arguments
@@ -191,6 +193,19 @@ def main():
     # sys.exit(qt_app.exec_())
 
     close_db(conn)
+
+    # qt_app = QtWidgets.QApplication(sys.argv)
+
+    qt_app = QtGui.QGuiApplication(sys.argv)
+
+    wid = QtGui.QWidget()
+    wid.resize(250, 150)
+    wid.setWindowTitle('Simple')
+    wid.show()
+
+
+    #my_window = GUI_Sprint4.GUIWindow()
+    sys.exit(qt_app.exec())
 
 
 if __name__ == '__main__':
