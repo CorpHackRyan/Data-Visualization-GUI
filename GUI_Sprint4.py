@@ -50,13 +50,17 @@ class GUIWindow(QMainWindow): # the class GUIWindow inherits all the properties 
         print(file_name)
         return file_name
 
-
     def render_data(self):
-        message = QMessageBox("Test")
-        message.show()
+        message = QMessageBox()
+        message.setText("Need to add more code to finish the project. Clicks Details for more info")
+        message.setInformativeText("(Informative text block)")
+        message.setWindowTitle("More coding required")
+        message.setDetailedText("This is where you will render the data in color coded text or on a graphical map")
+        message.setStandardButtons(QMessageBox.Ok)
+
+        return_val = message.exec_()
 
         # render the color coded text or graphical map data
-
 
     def closeEvent(self, event: QCloseEvent):
         reply = QMessageBox.question(
