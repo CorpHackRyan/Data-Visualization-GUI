@@ -1,4 +1,7 @@
-from PySide6.QtWidgets import QWidget, QPushButton, QListWidget, QApplication, QListWidgetItem
+from PySide6.QtWidgets import QWidget, QPushButton, QListWidget, QApplication, QListWidgetItem, QMessageBox
+from PySide6.QtGui import QCloseEvent
+
+
 from typing import List, Dict
 
 
@@ -21,3 +24,16 @@ class GUIWindow(QWidget):
         quit_button.resize(quit_button.sizeHint())
         quit_button.move(150, 400)
         self.show()
+
+    def closeEvent(self, event: QCloseEvent):
+        reply = QMessageBox.question(
+            self,
+            'Message',
+            'Are you sure you want to quit?',
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No)
+
+        if reply == QMessageBox.Yes:
+            event.accept()
+        else:
+            event.ignore()
