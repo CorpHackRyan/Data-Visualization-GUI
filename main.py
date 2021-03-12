@@ -159,6 +159,12 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
                 insert_xls_db(cursor, cells)
 
 
+def run_gui():
+    qt_app = PySide6.QtWidgets.QApplication(sys.argv)  # sys.argv is the list of command line arguments
+    my_window = GUI_Sprint4.GUIWindow()
+    sys.exit(qt_app.exec_())
+
+
 def main():
 
     url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
@@ -181,9 +187,7 @@ def main():
     # process_data(url, meta_data, cursor)
     # read_excel_data(xls_filename, cursor)
 
-    #qt_app = PySide6.QtWidgets.QApplication(sys.argv)  # sys.argv is the list of command line arguments
-    #my_window = GUI_Sprint4.GUIWindow()
-    #sys.exit(qt_app.exec_())
+    run_gui()
 
     close_db(conn)
 
