@@ -31,16 +31,32 @@ class GUIWindow(QMainWindow): # the class GUIWindow inherits all the properties 
         quit_button.clicked.connect(QApplication.instance().quit)
         quit_button.clicked.connect(QCloseEvent)
         quit_button.resize(quit_button.sizeHint())
-        quit_button.move(150, 400)
+        quit_button.move(150, 225)
         quit_button.setToolTip("Quit program")
         # implement hover over button to update status bar
 
         update_data_button = QPushButton("Update Data", self)
         update_data_button.clicked.connect(self.update_data)
+        update_data_button.resize(update_data_button.sizeHint())
+        update_data_button.move(150, 175)
+
+        render_data_button = QPushButton("Render data analysis", self)
+        render_data_button.clicked.connect(self.render_data)
+        render_data_button.move(150, 200)
+        render_data_button.resize(render_data_button.sizeHint())
 
     def update_data(self):
         file_name = QFileDialog.getOpenFileName(self, 'Open file')
         print(file_name)
+        return file_name
+
+
+    def render_data(self):
+        message = QMessageBox("Test")
+        message.show()
+
+        # render the color coded text or graphical map data
+
 
     def closeEvent(self, event: QCloseEvent):
         reply = QMessageBox.question(
