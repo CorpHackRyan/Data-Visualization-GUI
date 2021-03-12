@@ -8,10 +8,8 @@ from os import path
 import os
 import openpyxl
 import sys
-#import GUI_Sprint4
-from PySide2 import QtWidgets
-
-
+import GUI_Sprint4
+import PySide6.QtWidgets
 
 
 def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
@@ -162,10 +160,6 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
 
 
 def main():
-    # comment
-    # old_url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
-    #       "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_" \
-    #       "count_over_poverty_line,2016.repayment.3_yr_repayment.overall"
 
     url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
           "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_" \
@@ -183,29 +177,15 @@ def main():
 
     conn, cursor = open_db(db_name)
 
-    #setup_school_db(cursor)
-    #process_data(url, meta_data, cursor)
-    #read_excel_data(xls_filename, cursor)
+    # setup_school_db(cursor)
+    # process_data(url, meta_data, cursor)
+    # read_excel_data(xls_filename, cursor)
 
-    # GUI Portion of app
-    # qt_app = PySide6.QtWidgets.QApplication(sys.argv)  # sys.argv is the list of command line arguments
-    # my_window = GUI_Sprint4.MainWindow()
-    # sys.exit(qt_app.exec_())
+    #qt_app = PySide6.QtWidgets.QApplication(sys.argv)  # sys.argv is the list of command line arguments
+    #my_window = GUI_Sprint4.GUIWindow()
+    #sys.exit(qt_app.exec_())
 
     close_db(conn)
-
-    # qt_app = QtWidgets.QApplication(sys.argv)
-
-    qt_app = QtGui.QGuiApplication(sys.argv)
-
-    wid = QtGui.QWidget()
-    wid.resize(250, 150)
-    wid.setWindowTitle('Simple')
-    wid.show()
-
-
-    #my_window = GUI_Sprint4.GUIWindow()
-    sys.exit(qt_app.exec())
 
 
 if __name__ == '__main__':
