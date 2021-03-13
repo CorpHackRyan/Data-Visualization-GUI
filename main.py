@@ -23,7 +23,7 @@ def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
     final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
     # final_url = f"{url}&api_key={secrets.api_key}&page=0"  # for testing purposes
 
-    #for page_counter in range(meta_from_main[3]):
+    # for page_counter in range(meta_from_main[3]):
     for page_counter in range(5):
         response = requests.get(final_url)
 
@@ -55,7 +55,7 @@ def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
 def insert_db(cursor, school_tuple):
     sql = '''INSERT INTO school_export (school_id, school_name, school_city, student_size_2018, student_size_2017,
                 earnings_3_yrs_after_completion_overall_count_over_poverty_line_2017, repayment_3_yr_repayment_overall_2016,
-                school_state, repayment_repayment_cohort_3_year_declining_balance_2016) 
+                school_state, repayment_repayment_cohort_3_year_declining_balance_2016)
                 VALUES (?,?,?,?,?,?,?,?,?)'''
     cursor.execute(sql, school_tuple)
 

@@ -1,10 +1,8 @@
-from PySide6.QtWidgets import QWidget, QPushButton, QListWidget, QApplication, QListWidgetItem, QMessageBox, QFileDialog
-from PySide6.QtGui import QCloseEvent, QScreen, QHoverEvent
+from PySide6.QtWidgets import QPushButton, QApplication, QMessageBox, QFileDialog
+from PySide6.QtGui import QCloseEvent, QScreen,
 from PySide6.QtWidgets import QMainWindow
-
-
-
-from typing import List, Dict
+# not use: QWidget, QListWidget, QListWidgetItem , QtGui.QHoverEvent
+# from typing import List, Dict
 
 
 class GUIWindow(QMainWindow): # the class GUIWindow inherits all the properties of QWidget and thats the constructor type
@@ -58,7 +56,7 @@ class GUIWindow(QMainWindow): # the class GUIWindow inherits all the properties 
         message.setDetailedText("This is where you will render the data in color coded text or on a graphical map")
         message.setStandardButtons(QMessageBox.Ok)
 
-        return_val = message.exec_()
+        # return_val = message.exec_()
 
         # render the color coded text or graphical map data
 
@@ -80,5 +78,3 @@ class GUIWindow(QMainWindow): # the class GUIWindow inherits all the properties 
         self_geometry = self.frameGeometry()
         self_geometry.moveCenter(screen_center)
         self.move(self_geometry.topLeft())
-
-
