@@ -184,9 +184,9 @@ def main():
 
     conn, cursor = open_db(db_name)
 
-    # setup_school_db(cursor)
-    # process_data(url, meta_data, cursor)
-    # read_excel_data(xls_filename, cursor)
+    setup_school_db(cursor)
+    process_data(url, meta_data, cursor)
+    read_excel_data(xls_filename, cursor)
 
     run_gui()
 
