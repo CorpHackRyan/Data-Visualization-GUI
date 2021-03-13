@@ -1,8 +1,21 @@
 from PySide6.QtWidgets import QPushButton, QApplication, QMessageBox, QFileDialog
 from PySide6.QtGui import QCloseEvent, QScreen
 from PySide6.QtWidgets import QMainWindow
+
+
 # not use: QWidget, QListWidget, QListWidgetItem , QtGui.QHoverEvent
 # from typing import List, Dict
+
+
+def render_data():
+    message = QMessageBox()
+    message.setText("Need to add more code to finish the project. Clicks Details for more info")
+    message.setInformativeText("(Informative text block)")
+    message.setWindowTitle("More coding required")
+    message.setDetailedText("This is where you will render the data in color coded text or on a graphical map")
+    message.setStandardButtons(QMessageBox.Ok)
+    message.exec_()
+    # render the color coded text or graphical map data
 
 
 class GUIWindow(QMainWindow): # the class GUIWindow inherits all the properties of QWidget and thats the constructor type
@@ -39,7 +52,7 @@ class GUIWindow(QMainWindow): # the class GUIWindow inherits all the properties 
         update_data_button.move(150, 175)
 
         render_data_button = QPushButton("Render data analysis", self)
-        render_data_button.clicked.connect(self.render_data)
+        render_data_button.clicked.connect(render_data)
         render_data_button.move(150, 200)
         render_data_button.resize(render_data_button.sizeHint())
 
@@ -47,18 +60,6 @@ class GUIWindow(QMainWindow): # the class GUIWindow inherits all the properties 
         file_name = QFileDialog.getOpenFileName(self, 'Open file')
         print(file_name)
         return file_name
-
-    def render_data(self):
-        message = QMessageBox()
-        message.setText("Need to add more code to finish the project. Clicks Details for more info")
-        message.setInformativeText("(Informative text block)")
-        message.setWindowTitle("More coding required")
-        message.setDetailedText("This is where you will render the data in color coded text or on a graphical map")
-        message.setStandardButtons(QMessageBox.Ok)
-
-        # return_val = message.exec_()
-
-        # render the color coded text or graphical map data
 
     def closeEvent(self, event: QCloseEvent):
         reply = QMessageBox.question(
