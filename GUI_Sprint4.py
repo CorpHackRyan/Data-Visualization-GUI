@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QPushButton, QApplication, QMessageBox, QFileDialog
-from PySide6.QtGui import QCloseEvent, QScreen,
+from PySide6.QtGui import QCloseEvent, QScreen
 from PySide6.QtWidgets import QMainWindow
 # not use: QWidget, QListWidget, QListWidgetItem , QtGui.QHoverEvent
 # from typing import List, Dict
