@@ -162,6 +162,7 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
 def run_gui():
     qt_app = PySide6.QtWidgets.QApplication(sys.argv)  # sys.argv is the list of command line arguments
     my_window = GUI_Sprint4.GUIWindow()
+    my_window.show()
     sys.exit(qt_app.exec_())
 
 

@@ -18,7 +18,7 @@ def render_data():
     # render the color coded text or graphical map data
 
 
-class GUIWindow(QMainWindow): # the class GUIWindow inherits all the properties of QWidget and thats the constructor type
+class GUIWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.data = 0
