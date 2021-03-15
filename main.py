@@ -159,9 +159,9 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
                 insert_xls_db(cursor, cells)
 
 
-def run_gui(db_filename, cursor: sqlite3.Cursor):
+def run_gui(db_filename):
     qt_app = PySide6.QtWidgets.QApplication(sys.argv)  # sys.argv is the list of command line arguments
-    my_window = GUI_Sprint4.GUIWindow(db_filename, cursor)
+    my_window = GUI_Sprint4.GUIWindow(db_filename)
     my_window.show()
     sys.exit(qt_app.exec_())
 
@@ -177,7 +177,7 @@ def main():
     db_name = "school_data.db"
 
     xls_filename = "state_M2019_dl.xlsx"
-
+    #xls_filename = "C:/.SRDesign/Projects/roconnor-Sprint1/state_M2019_dl.xlsx"
     if os.path.exists(db_name):
         os.remove(db_name)
 
@@ -185,13 +185,14 @@ def main():
     setup_school_db(cursor)
     process_data(url, meta_data, cursor)
 
+
+
     #read_excel_data(xls_filename, cursor)
 
-
+    close_db(conn)
 
     run_gui(db_name)
 
-    close_db(conn)
 
 
 if __name__ == '__main__':

@@ -55,9 +55,9 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
 # from typing import List, Dict
 
 class GUIWindow(QMainWindow):
-    def __init__(self, db_filename):
+    def __init__(self, db_filename_from_main):
         super().__init__()
-        self.db_name = db_filename
+        self.db_name = db_filename_from_main
         self.data = 0
         self.list_control = None
         self.setup_window()
@@ -98,7 +98,7 @@ class GUIWindow(QMainWindow):
         file_name = QFileDialog.getOpenFileName(self, "'Open file")[0]
         print(file_name, " was the file selected.")
         conn, cursor = open_db(self.db_name)
-        read_excel_data(str(file_name), cursor)
+        read_excel_data(file_name, cursor)
         main.close_db(conn)
 
         return file_name
