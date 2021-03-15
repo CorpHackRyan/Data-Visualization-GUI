@@ -2,10 +2,111 @@ import openpyxl
 from PySide6.QtWidgets import QPushButton, QApplication, QMessageBox, QFileDialog
 from PySide6.QtGui import QCloseEvent, QScreen
 from PySide6.QtWidgets import QMainWindow
-import main
 import sqlite3
 from typing import Tuple
 from os import path
+import secrets
+import requests
+import math
+import os
+
+
+url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
+          "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_" \
+          "count_over_poverty_line,2016.repayment.3_yr_repayment.overall,school.state,2016.repayment.repayment_cohort.3_" \
+          "year_declining_balance"
+
+
+def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
+    #  meta_from_main is a list with the following index descriptions
+    #                 0 index = total results
+    #                 1 index = current page
+    #                 2 index = results per page
+    #                 3 index = total pages
+
+    page_counter = 0
+    final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
+    # final_url = f"{url}&api_key={secrets.api_key}&page=0"  # for testing purposes
+
+    # for page_counter in range(meta_from_main[3]):
+    for page_counter in range(1):
+        response = requests.get(final_url)
+
+        if response.status_code != 200:
+            print(response.text)
+            exit(-1)
+
+        json_data = response.json()
+
+        # All the results on each page in a singular list returned
+        each_page_data = json_data["results"]
+
+        for school_data in each_page_data:
+
+            school_tpl = (school_data["id"], school_data["school.name"], school_data["school.city"],
+                          school_data["2018.student.size"], school_data["2017.student.size"],
+                          school_data["2017.earnings.3_yrs_after_completion.overall_count_over_poverty_line"],
+                          school_data["2016.repayment.3_yr_repayment.overall"], school_data["school.state"],
+                          school_data["2016.repayment.repayment_cohort.3_year_declining_balance"])
+
+            print(f"Page {page_counter} of {meta_from_main[3]} ->", school_tpl)
+
+            insert_db(cursor, school_tpl)
+
+        page_counter += 1
+        final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
+
+
+def get_metadata(url: str):
+    final_url = f"{url}&api_key={secrets.api_key}&page=0"
+    response = requests.get(final_url)
+
+    if response.status_code != 200:
+        print(response.text)
+        exit(-1)
+
+    json_data = response.json()
+
+    print(json_data)
+
+    total_results = json_data["metadata"]["total"]
+    current_page = json_data["metadata"]["page"]
+    results_per_page = json_data["metadata"]["per_page"]
+    total_pages = total_results / results_per_page
+
+    return [total_results, current_page, results_per_page, math.ceil(total_pages)]
+
+
+def setup_school_db(cursor: sqlite3.Cursor):
+    cursor.execute('''CREATE TABLE IF NOT EXISTS school_export(
+    school_id INTEGER PRIMARY KEY,
+    school_name TEXT,
+    school_city TEXT,
+    student_size_2018 INTEGER,
+    student_size_2017 INTEGER,
+    earnings_3_yrs_after_completion_overall_count_over_poverty_line_2017 INTEGER,
+    repayment_3_yr_repayment_overall_2016 INTEGER,
+    school_state TEXT,
+    repayment_repayment_cohort_3_year_declining_balance_2016 INTEGER
+    );''')
+
+    cursor.execute('''CREATE TABLE IF NOT EXISTS jobdata_by_state(
+        unique_id INTEGER PRIMARY KEY,
+        area_title TEXT,
+        occ_code INTEGER,
+        occ_title TEXT,
+        tot_emp INTEGER,
+        h_pct25 INTEGER,
+        a_pct25 INTEGER
+        );''')
+
+
+def insert_db(cursor, school_tuple):
+    sql = '''INSERT INTO school_export (school_id, school_name, school_city, student_size_2018, student_size_2017,
+                earnings_3_yrs_after_completion_overall_count_over_poverty_line_2017, repayment_3_yr_repayment_overall_2016,
+                school_state, repayment_repayment_cohort_3_year_declining_balance_2016)
+                VALUES (?,?,?,?,?,?,?,?,?)'''
+    cursor.execute(sql, school_tuple)
 
 
 def insert_xls_db(cursor: sqlite3.Cursor, xls_tuple):
@@ -21,6 +122,11 @@ def open_db(filename: str) -> Tuple[sqlite3.Connection, sqlite3.Cursor]:
     db_connection = sqlite3.connect(filename)
     cursor = db_connection.cursor()  # get ready to read/write data
     return db_connection, cursor
+
+
+def close_db(connection: sqlite3.Connection):
+    connection.commit()  # make sure any changes get saved
+    connection.close()
 
 
 def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
@@ -75,7 +181,7 @@ class GUIWindow(QMainWindow):
         self.show()
 
     def gui_components(self):
-        select_xlsx_button = QPushButton("Select .xlsx file to update data", self)
+        select_xlsx_button = QPushButton("Update Data", self)
         select_xlsx_button.clicked.connect(self.update_data)
         select_xlsx_button.resize(select_xlsx_button.sizeHint())
         select_xlsx_button.move(150, 175)
@@ -95,11 +201,21 @@ class GUIWindow(QMainWindow):
         quit_button.setToolTip("Quit program")
 
     def update_data(self):
+        meta_data = get_metadata(url)
+
+        if os.path.exists(self.db_name):
+            os.remove(self.db_name)
+
+        conn, cursor = open_db(self.db_name)
+        setup_school_db(cursor)
+        process_data(url, meta_data, cursor)
+        close_db(conn)
+
         file_name = QFileDialog.getOpenFileName(self, "'Open file")[0]
         print(file_name, " was the file selected.")
         conn, cursor = open_db(self.db_name)
         read_excel_data(file_name, cursor)
-        main.close_db(conn)
+        close_db(conn)
 
         return file_name
 
