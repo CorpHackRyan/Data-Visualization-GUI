@@ -131,6 +131,7 @@ def setup_school_db(cursor: sqlite3.Cursor):
 
 
 def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
+
     work_book = openpyxl.load_workbook(xls_filename)
     work_sheet = work_book.active
 
@@ -150,7 +151,7 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
             pass
         else:
             if cells[3] == "major":
-                # Using current row number as unique identifier because we wouldn't know why I'm doing this
+                # Using current row number as unique identifier because we wouldn't know why else I'm doing this
                 cells.append(unique_id_counter)
                 unique_id_counter += 1
                 del cells[3]
@@ -158,9 +159,9 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
                 insert_xls_db(cursor, cells)
 
 
-def run_gui(db_filename):
+def run_gui(db_filename, cursor: sqlite3.Cursor):
     qt_app = PySide6.QtWidgets.QApplication(sys.argv)  # sys.argv is the list of command line arguments
-    my_window = GUI_Sprint4.GUIWindow(db_filename)
+    my_window = GUI_Sprint4.GUIWindow(db_filename, cursor)
     my_window.show()
     sys.exit(qt_app.exec_())
 
@@ -175,15 +176,22 @@ def main():
 
     db_name = "school_data.db"
 
+    xls_filename = "state_M2019_dl.xlsx"
+
     if os.path.exists(db_name):
         os.remove(db_name)
 
     conn, cursor = open_db(db_name)
     setup_school_db(cursor)
     process_data(url, meta_data, cursor)
-    close_db(conn)
+
+    #read_excel_data(xls_filename, cursor)
+
+
 
     run_gui(db_name)
+
+    close_db(conn)
 
 
 if __name__ == '__main__':

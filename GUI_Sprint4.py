@@ -98,7 +98,8 @@ class GUIWindow(QMainWindow):
         file_name = QFileDialog.getOpenFileName(self, "'Open file")[0]
         print(file_name, " was the file selected.")
         conn, cursor = open_db(self.db_name)
-        main.read_excel_data(str(file_name), cursor)
+        read_excel_data(str(file_name), cursor)
+        main.close_db(conn)
 
         return file_name
 
