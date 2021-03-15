@@ -1,9 +1,54 @@
-from PySide6.QtWidgets import QPushButton, QApplication, QMessageBox, QFileDialog, QLabel
+import openpyxl
+from PySide6.QtWidgets import QPushButton, QApplication, QMessageBox, QFileDialog
 from PySide6.QtGui import QCloseEvent, QScreen
 from PySide6.QtWidgets import QMainWindow
-import sqlite3
 import main
-import time
+import sqlite3
+from typing import Tuple
+from os import path
+
+
+def insert_xls_db(cursor: sqlite3.Cursor, xls_tuple):
+    sql = '''INSERT INTO jobdata_by_state (area_title, occ_code, occ_title, tot_emp, h_pct25, a_pct25, unique_id)
+                VALUES (?,?,?,?,?,?,?)'''
+    cursor.execute(sql, xls_tuple)
+
+
+def open_db(filename: str) -> Tuple[sqlite3.Connection, sqlite3.Cursor]:
+
+    print("file exists:"+str(path.exists(filename)))
+
+    db_connection = sqlite3.connect(filename)
+    cursor = db_connection.cursor()  # get ready to read/write data
+    return db_connection, cursor
+
+
+def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
+    work_book = openpyxl.load_workbook(xls_filename)
+    work_sheet = work_book.active
+
+    # BETTER SOLUTION: Get columns with specific titles so no matter what order they are in we can get correct data.
+    # Hard coded columns which contain the specific data we are looking for
+    # col 1=area_title,  col7=occ_code,  col8=occ_title, col9=o_group, col10=tot_emp,  col19=h_pct25,  col24=a_pct25
+    cols = [1, 7, 8, 9, 10, 19, 24]
+    unique_id_counter = 1
+
+    for row in work_sheet.iter_rows():
+
+        cells = [cell.value for (idx, cell) in enumerate(row) if (
+            idx in cols and cell.value is not None)]
+
+        # skip header row in excel file if row 1
+        if row[0].row == 1:
+            pass
+        else:
+            if cells[3] == "major":
+                # Using current row number as unique identifier because we wouldn't know why I'm doing this
+                cells.append(unique_id_counter)
+                unique_id_counter += 1
+                del cells[3]
+                print(cells)
+                insert_xls_db(cursor, cells)
 
 
 # not use: QWidget, QListWidget, QListWidgetItem , QtGui.QHoverEvent
@@ -40,7 +85,7 @@ class GUIWindow(QMainWindow):
         render_data_button.clicked.connect(self.render_data)
         render_data_button.move(150, 200)
         render_data_button.resize(render_data_button.sizeHint())
-        #dont allow this button to be chosen
+        # disable this button until file has been selected
 
         quit_button = QPushButton("Exit", self)
         quit_button.clicked.connect(QApplication.instance().quit)
@@ -49,11 +94,10 @@ class GUIWindow(QMainWindow):
         quit_button.move(150, 225)
         quit_button.setToolTip("Quit program")
 
-
     def update_data(self):
         file_name = QFileDialog.getOpenFileName(self, "'Open file")[0]
         print(file_name, " was the file selected.")
-        conn, cursor = main.open_db(self.db_name)
+        conn, cursor = open_db(self.db_name)
         main.read_excel_data(str(file_name), cursor)
 
         return file_name
