@@ -1,28 +1,18 @@
-from PySide6.QtWidgets import QPushButton, QApplication, QMessageBox, QFileDialog
+from PySide6.QtWidgets import QPushButton, QApplication, QMessageBox, QFileDialog, QLabel
 from PySide6.QtGui import QCloseEvent, QScreen
 from PySide6.QtWidgets import QMainWindow
 import sqlite3
 import main
+import time
 
 
 # not use: QWidget, QListWidget, QListWidgetItem , QtGui.QHoverEvent
 # from typing import List, Dict
 
-
-def render_data():
-    message = QMessageBox()
-    message.setText("Need to add more code to finish the project. Clicks Details for more info")
-    message.setInformativeText("(Informative text block)")
-    message.setWindowTitle("More coding required")
-    message.setDetailedText("This is where you will render the data in color coded text or on a graphical map")
-    message.setStandardButtons(QMessageBox.Ok)
-    message.exec_()
-    # render the color coded text or graphical map data
-
-
 class GUIWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, db_filename):
         super().__init__()
+        self.db_name = db_filename
         self.data = 0
         self.list_control = None
         self.setup_window()
@@ -40,29 +30,43 @@ class GUIWindow(QMainWindow):
         self.show()
 
     def gui_components(self):
+        select_xlsx_button = QPushButton("Select .xlsx file to update data", self)
+        select_xlsx_button.clicked.connect(self.update_data)
+        select_xlsx_button.resize(select_xlsx_button.sizeHint())
+        select_xlsx_button.move(150, 175)
+        # implement hover over button to update status bar with file chosen
+
+        render_data_button = QPushButton("Render data analysis", self)
+        render_data_button.clicked.connect(self.render_data)
+        render_data_button.move(150, 200)
+        render_data_button.resize(render_data_button.sizeHint())
+        #dont allow this button to be chosen
+
         quit_button = QPushButton("Exit", self)
         quit_button.clicked.connect(QApplication.instance().quit)
         quit_button.clicked.connect(QCloseEvent)
         quit_button.resize(quit_button.sizeHint())
         quit_button.move(150, 225)
         quit_button.setToolTip("Quit program")
-        # implement hover over button to update status bar
 
-        update_data_button = QPushButton("Update Data", self)
-        update_data_button.clicked.connect(self.update_data)
-        update_data_button.resize(update_data_button.sizeHint())
-        update_data_button.move(150, 175)
-
-        render_data_button = QPushButton("Render data analysis", self)
-        render_data_button.clicked.connect(render_data)
-        render_data_button.move(150, 200)
-        render_data_button.resize(render_data_button.sizeHint())
 
     def update_data(self):
-        file_name = QFileDialog.getOpenFileName(self, 'Open file')
-        print(file_name)
-        conn, cursor = main.open_db(file_name)
+        file_name = QFileDialog.getOpenFileName(self, "'Open file")[0]
+        print(file_name, " was the file selected.")
+        conn, cursor = main.open_db(self.db_name)
+        main.read_excel_data(str(file_name), cursor)
+
         return file_name
+
+    def render_data(self):
+        message = QMessageBox()
+        message.setText("Need to add more code to finish the project. Clicks Details for more info")
+        message.setInformativeText("(Informative text block)")
+        message.setWindowTitle("More coding required")
+        message.setDetailedText("This is where you will render the data in color coded text or on a graphical map")
+        message.setStandardButtons(QMessageBox.Ok)
+        message.exec_()
+        # render the color coded text or graphical map data
 
     def closeEvent(self, event: QCloseEvent):
         reply = QMessageBox.question(

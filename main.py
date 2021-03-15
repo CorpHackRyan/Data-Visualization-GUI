@@ -24,7 +24,7 @@ def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
     # final_url = f"{url}&api_key={secrets.api_key}&page=0"  # for testing purposes
 
     # for page_counter in range(meta_from_main[3]):
-    for page_counter in range(5):
+    for page_counter in range(1):
         response = requests.get(final_url)
 
         if response.status_code != 200:
@@ -131,7 +131,6 @@ def setup_school_db(cursor: sqlite3.Cursor):
 
 
 def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
-
     work_book = openpyxl.load_workbook(xls_filename)
     work_sheet = work_book.active
 
@@ -151,7 +150,7 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
             pass
         else:
             if cells[3] == "major":
-                # use current row number as unique identifier for db row
+                # Using current row number as unique identifier because we wouldn't know why I'm doing this
                 cells.append(unique_id_counter)
                 unique_id_counter += 1
                 del cells[3]
@@ -159,38 +158,32 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
                 insert_xls_db(cursor, cells)
 
 
-def run_gui():
+def run_gui(db_filename):
     qt_app = PySide6.QtWidgets.QApplication(sys.argv)  # sys.argv is the list of command line arguments
-    my_window = GUI_Sprint4.GUIWindow()
+    my_window = GUI_Sprint4.GUIWindow(db_filename)
     my_window.show()
     sys.exit(qt_app.exec_())
 
 
 def main():
-
     url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
           "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_" \
           "count_over_poverty_line,2016.repayment.3_yr_repayment.overall,school.state,2016.repayment.repayment_cohort.3_" \
           "year_declining_balance"
 
-    db_name = "school_data.db"
-    xls_filename = "state_M2019_dl.xlsx"
-
     meta_data = get_metadata(url)
 
-    # Removing the old db ensures I can run this over and over.
+    db_name = "school_data.db"
+
     if os.path.exists(db_name):
         os.remove(db_name)
 
     conn, cursor = open_db(db_name)
-
     setup_school_db(cursor)
     process_data(url, meta_data, cursor)
-    # read_excel_data(xls_filename, cursor)
-
-    run_gui()
-
     close_db(conn)
+
+    run_gui(db_name)
 
 
 if __name__ == '__main__':
