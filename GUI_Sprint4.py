@@ -154,7 +154,6 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
         print(error)
 
 
-
 class GUIWindow(QMainWindow):
     def __init__(self, db_filename_from_main):
         super().__init__()
