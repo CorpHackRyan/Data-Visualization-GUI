@@ -151,14 +151,14 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
                 insert_xls_db(cursor, cells)
 
 
-# not use: QWidget, QListWidget, QListWidgetItem , QtGui.QHoverEvent
-# from typing import List, Dict
-
 class GUIWindow(QMainWindow):
-    def __init__(self, db_filename_from_main, url_from_main):
+    def __init__(self, db_filename_from_main):
         super().__init__()
         self.db_name = db_filename_from_main
-        self.url_name = url_from_main
+        self.url_name = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
+          "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_" \
+          "count_over_poverty_line,2016.repayment.3_yr_repayment.overall,school.state,2016.repayment.repayment_cohort.3_" \
+          "year_declining_balance"
         self.data = 0
         self.list_control = None
         self.setup_window()
@@ -196,14 +196,14 @@ class GUIWindow(QMainWindow):
         quit_button.setToolTip("Quit program")
 
     def update_data(self):
-        meta_data = get_metadata(self.url_from_main)
+        meta_data = get_metadata(self.url_name)
 
         if os.path.exists(self.db_name):
             os.remove(self.db_name)
 
         conn, cursor = open_db(self.db_name)
         setup_school_db(cursor)
-        process_data(self.url_from_main, meta_data, cursor)
+        process_data(self.url_name, meta_data, cursor)
         close_db(conn)
 
         file_name = QFileDialog.getOpenFileName(self, "'Open file")[0]
