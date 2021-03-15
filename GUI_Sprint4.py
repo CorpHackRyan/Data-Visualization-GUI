@@ -1,6 +1,8 @@
 from PySide6.QtWidgets import QPushButton, QApplication, QMessageBox, QFileDialog
 from PySide6.QtGui import QCloseEvent, QScreen
 from PySide6.QtWidgets import QMainWindow
+import sqlite3
+import main
 
 
 # not use: QWidget, QListWidget, QListWidgetItem , QtGui.QHoverEvent
@@ -59,6 +61,7 @@ class GUIWindow(QMainWindow):
     def update_data(self):
         file_name = QFileDialog.getOpenFileName(self, 'Open file')
         print(file_name)
+        conn, cursor = main.open_db(file_name)
         return file_name
 
     def closeEvent(self, event: QCloseEvent):

@@ -186,7 +186,7 @@ def main():
 
     setup_school_db(cursor)
     process_data(url, meta_data, cursor)
-    read_excel_data(xls_filename, cursor)
+    # read_excel_data(xls_filename, cursor)
 
     run_gui()
 
