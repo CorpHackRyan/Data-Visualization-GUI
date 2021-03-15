@@ -1,7 +1,8 @@
 import openpyxl
+from PySide6 import QtCore
 from PySide6.QtWidgets import QPushButton, QApplication, QMessageBox, QFileDialog
-from PySide6.QtGui import QCloseEvent, QScreen
-from PySide6.QtWidgets import QMainWindow
+from PySide6.QtGui import QCloseEvent, QScreen, QCursor, Qt
+from PySide6.QtWidgets import QMainWindow, QLabel
 import sqlite3
 from typing import Tuple
 from os import path
@@ -36,7 +37,6 @@ def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
         each_page_data = json_data["results"]
 
         for school_data in each_page_data:
-
             school_tpl = (school_data["id"], school_data["school.name"], school_data["school.city"],
                           school_data["2018.student.size"], school_data["2017.student.size"],
                           school_data["2017.earnings.3_yrs_after_completion.overall_count_over_poverty_line"],
@@ -110,8 +110,7 @@ def insert_xls_db(cursor: sqlite3.Cursor, xls_tuple):
 
 
 def open_db(filename: str) -> Tuple[sqlite3.Connection, sqlite3.Cursor]:
-
-    print("file exists:"+str(path.exists(filename)))
+    print("file exists:" + str(path.exists(filename)))
 
     db_connection = sqlite3.connect(filename)
     cursor = db_connection.cursor()  # get ready to read/write data
@@ -124,31 +123,36 @@ def close_db(connection: sqlite3.Connection):
 
 
 def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
-    work_book = openpyxl.load_workbook(xls_filename)
-    work_sheet = work_book.active
 
-    # BETTER SOLUTION: Get columns with specific titles so no matter what order they are in we can get correct data.
-    # Hard coded columns which contain the specific data we are looking for
-    # col 1=area_title,  col7=occ_code,  col8=occ_title, col9=o_group, col10=tot_emp,  col19=h_pct25,  col24=a_pct25
-    cols = [1, 7, 8, 9, 10, 19, 24]
-    unique_id_counter = 1
+    try:
+        work_book = openpyxl.load_workbook(xls_filename)
+        work_sheet = work_book.active
 
-    for row in work_sheet.iter_rows():
+        # BETTER SOLUTION: Get columns with specific titles so no matter what order they are in we can get correct data.
+        # Hard coded columns which contain the specific data we are looking for
+        # col 1=area_title,  col7=occ_code,  col8=occ_title, col9=o_group, col10=tot_emp,  col19=h_pct25,  col24=a_pct25
+        cols = [1, 7, 8, 9, 10, 19, 24]
+        unique_id_counter = 1
 
-        cells = [cell.value for (idx, cell) in enumerate(row) if (
-            idx in cols and cell.value is not None)]
+        for row in work_sheet.iter_rows():
 
-        # skip header row in excel file if row 1
-        if row[0].row == 1:
-            pass
-        else:
-            if cells[3] == "major":
-                # Using current row number as unique identifier because we wouldn't know why I'm doing this
-                cells.append(unique_id_counter)
-                unique_id_counter += 1
-                del cells[3]
-                print(cells)
-                insert_xls_db(cursor, cells)
+            cells = [cell.value for (idx, cell) in enumerate(row) if (
+                    idx in cols and cell.value is not None)]
+
+            # skip header row in excel file if row 1
+            if row[0].row == 1:
+                pass
+            else:
+                if cells[3] == "major":
+                    # Using current row number as unique identifier because we wouldn't know why I'm doing this
+                    cells.append(unique_id_counter)
+                    unique_id_counter += 1
+                    del cells[3]
+                    print(cells)
+                    insert_xls_db(cursor, cells)
+
+    except Exception as error:
+        pass
 
 
 class GUIWindow(QMainWindow):
@@ -156,11 +160,12 @@ class GUIWindow(QMainWindow):
         super().__init__()
         self.db_name = db_filename_from_main
         self.url_name = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
-          "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_" \
-          "count_over_poverty_line,2016.repayment.3_yr_repayment.overall,school.state,2016.repayment.repayment_cohort.3_" \
-          "year_declining_balance"
+                        "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_" \
+                        "count_over_poverty_line,2016.repayment.3_yr_repayment.overall,school.state,2016.repayment.repayment_cohort.3_" \
+                        "year_declining_balance"
         self.data = 0
         self.list_control = None
+        self.progress_lbl = QLabel(self)
         self.setup_window()
 
     def setup_window(self):
@@ -196,6 +201,7 @@ class GUIWindow(QMainWindow):
         quit_button.setToolTip("Quit program")
 
     def update_data(self):
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         meta_data = get_metadata(self.url_name)
 
         if os.path.exists(self.db_name):
@@ -205,12 +211,16 @@ class GUIWindow(QMainWindow):
         setup_school_db(cursor)
         process_data(self.url_name, meta_data, cursor)
         close_db(conn)
+        QApplication.setOverrideCursor(QCursor(Qt.ArrowCursor))
 
         file_name = QFileDialog.getOpenFileName(self, "'Open file")[0]
         print(file_name, " was the file selected.")
         conn, cursor = open_db(self.db_name)
+
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         read_excel_data(file_name, cursor)
         close_db(conn)
+        QApplication.setOverrideCursor(QCursor(Qt.ArrowCursor))
 
         return file_name
 
