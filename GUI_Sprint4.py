@@ -11,12 +11,6 @@ import math
 import os
 
 
-url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
-          "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_" \
-          "count_over_poverty_line,2016.repayment.3_yr_repayment.overall,school.state,2016.repayment.repayment_cohort.3_" \
-          "year_declining_balance"
-
-
 def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
     #  meta_from_main is a list with the following index descriptions
     #                 0 index = total results
@@ -161,9 +155,10 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
 # from typing import List, Dict
 
 class GUIWindow(QMainWindow):
-    def __init__(self, db_filename_from_main):
+    def __init__(self, db_filename_from_main, url_from_main):
         super().__init__()
         self.db_name = db_filename_from_main
+        self.url_name = url_from_main
         self.data = 0
         self.list_control = None
         self.setup_window()
@@ -181,10 +176,10 @@ class GUIWindow(QMainWindow):
         self.show()
 
     def gui_components(self):
-        select_xlsx_button = QPushButton("Update Data", self)
-        select_xlsx_button.clicked.connect(self.update_data)
-        select_xlsx_button.resize(select_xlsx_button.sizeHint())
-        select_xlsx_button.move(150, 175)
+        update_data = QPushButton("Update Data", self)
+        update_data.clicked.connect(self.update_data)
+        update_data.resize(update_data.sizeHint())
+        update_data.move(150, 175)
         # implement hover over button to update status bar with file chosen
 
         render_data_button = QPushButton("Render data analysis", self)
@@ -201,14 +196,14 @@ class GUIWindow(QMainWindow):
         quit_button.setToolTip("Quit program")
 
     def update_data(self):
-        meta_data = get_metadata(url)
+        meta_data = get_metadata(self.url_from_main)
 
         if os.path.exists(self.db_name):
             os.remove(self.db_name)
 
         conn, cursor = open_db(self.db_name)
         setup_school_db(cursor)
-        process_data(url, meta_data, cursor)
+        process_data(self.url_from_main, meta_data, cursor)
         close_db(conn)
 
         file_name = QFileDialog.getOpenFileName(self, "'Open file")[0]
