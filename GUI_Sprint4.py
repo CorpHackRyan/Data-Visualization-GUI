@@ -1,5 +1,4 @@
 import openpyxl
-from PySide6 import QtCore
 from PySide6.QtWidgets import QPushButton, QApplication, QMessageBox, QFileDialog
 from PySide6.QtGui import QCloseEvent, QScreen, QCursor, Qt
 from PySide6.QtWidgets import QMainWindow, QLabel
@@ -152,17 +151,18 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
                     insert_xls_db(cursor, cells)
 
     except Exception as error:
-        pass
+        print(error)
+
 
 
 class GUIWindow(QMainWindow):
     def __init__(self, db_filename_from_main):
         super().__init__()
         self.db_name = db_filename_from_main
-        self.url_name = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
-                        "school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_completion.overall_" \
-                        "count_over_poverty_line,2016.repayment.3_yr_repayment.overall,school.state,2016.repayment.repayment_cohort.3_" \
-                        "year_declining_balance"
+        self.url_name = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&" \
+                        "fields=id,school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_" \
+                        "completion.overall_count_over_poverty_line,2016.repayment.3_yr_repayment.overall,school.state," \
+                        "2016.repayment.repayment_cohort.3_year_declining_balance"
         self.data = 0
         self.list_control = None
         self.progress_lbl = QLabel(self)
