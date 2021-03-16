@@ -22,7 +22,7 @@ def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
     final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
     # final_url = f"{url}&api_key={secrets.api_key}&page=0"  # for testing purposes
 
-    #for page_counter in range(meta_from_main[3]):
+    # for page_counter in range(meta_from_main[3]):
     for page_counter in range(1):
         response = requests.get(final_url)
 
@@ -167,20 +167,17 @@ class RenderData(QWidget):
         self.render_map_checkbox = QCheckBox("Render a Map", self)
         self.render_map_checkbox.move(20, 90)
 
-        self.analysis_type1_checkbox = QCheckBox("Compare the number of college graduates in a state \n(for the most recent year) "
-                                       "with number of jobs in that \nstate that likely expect a college education.", self)
+        self.analysis_type1_checkbox = QCheckBox("Compare the number of college graduates in a state \n(for the most recent "
+                                                 "year) with number of jobs in that \nstate that likely expect a college "
+                                                 "education.", self)
         self.analysis_type1_checkbox.setGeometry(430, 20, 300, 100)
         self.analysis_type2_checkbox = QCheckBox("Compare the 3 year graduate cohort declining balance \npercentage to "
                                                  "the 25% salary in the state.", self)
-        #self.analysis_type1_checkbox.setGeometry(430, 1, 300, 100)
         self.analysis_type2_checkbox.setGeometry(430, 70, 400, 100)
-
-       # self.analysis_type1_checkbox.move(460, 20)
 
         self.setWindowTitle("Data Visualization for Project 1 - Sprint 4 - Ryan O'Connor - COMP490 - T/R")
         self.setGeometry(100, 100, 800, 650)
         self.center()
-
 
     def center(self):
         screen_center = QScreen.availableGeometry(QApplication.primaryScreen()).center()
@@ -261,13 +258,13 @@ class GUIWindow(QMainWindow):
 
     def render_data(self):
         self.render_gui.show()
-        #message = QMessageBox()
-        #message.setText("Need to add more code to finish the project. Clicks Details for more info")
-        #message.setInformativeText("(Informative text block)")
-        #message.setWindowTitle("More coding required")
-        #message.setDetailedText("This is where you will render the data in color coded text or on a graphical map")
-        #message.setStandardButtons(QMessageBox.Ok)
-        #message.exec_()
+        # message = QMessageBox()
+        # message.setText("Need to add more code to finish the project. Clicks Details for more info")
+        # message.setInformativeText("(Informative text block)")
+        # message.setWindowTitle("More coding required")
+        # message.setDetailedText("This is where you will render the data in color coded text or on a graphical map")
+        # message.setStandardButtons(QMessageBox.Ok)
+        # message.exec_()
         # render the color coded text or graphical map data
 
     def closeEvent(self, event: QCloseEvent):
