@@ -151,8 +151,19 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
                     insert_xls_db(cursor, cells)
 
     except Exception as error:
-        print(error)
+        print(str(error))
+        error_msg(str(error))
 
+
+def error_msg(error_message):
+    message = QMessageBox()
+    message.setText("There was a problem processing your file. Please click more details for more information.")
+    message.setInformativeText(error_message)
+    message.setWindowTitle("Error processing file")
+    message.setDetailedText(error_message)
+    message.setStandardButtons(QMessageBox.Ok)
+    QApplication.setOverrideCursor(QCursor(Qt.ArrowCursor))
+    message.exec_()
 
 class RenderData(QWidget):
     def __init__(self):
@@ -175,9 +186,18 @@ class RenderData(QWidget):
                                                  "the 25% salary in the state.", self)
         self.analysis_type2_checkbox.setGeometry(430, 70, 400, 100)
 
+        self.render_data_button = QPushButton("VISUALIZE", self)
+        self.render_data_button.setGeometry(10, 150, 770, 40)
+
         self.setWindowTitle("Data Visualization for Project 1 - Sprint 4 - Ryan O'Connor - COMP490 - T/R")
         self.setGeometry(100, 100, 800, 650)
         self.center()
+
+    def swap_color_checkbox(self):
+        self.render_map_checkbox.setChecked(False)
+
+    def swap_render_map_checkbox(self):
+        self.render_map_checkbox.setChecked(False)
 
     def center(self):
         screen_center = QScreen.availableGeometry(QApplication.primaryScreen()).center()
@@ -258,13 +278,6 @@ class GUIWindow(QMainWindow):
 
     def render_data(self):
         self.render_gui.show()
-        # message = QMessageBox()
-        # message.setText("Need to add more code to finish the project. Clicks Details for more info")
-        # message.setInformativeText("(Informative text block)")
-        # message.setWindowTitle("More coding required")
-        # message.setDetailedText("This is where you will render the data in color coded text or on a graphical map")
-        # message.setStandardButtons(QMessageBox.Ok)
-        # message.exec_()
         # render the color coded text or graphical map data
 
     def closeEvent(self, event: QCloseEvent):
