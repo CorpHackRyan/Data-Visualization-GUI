@@ -22,7 +22,7 @@ def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
     final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
     # final_url = f"{url}&api_key={secrets.api_key}&page=0"  # for testing purposes
 
-    # for page_counter in range(meta_from_main[3]):
+    #for page_counter in range(meta_from_main[3]):
     for page_counter in range(1):
         response = requests.get(final_url)
 
@@ -169,7 +169,7 @@ class GUIWindow(QMainWindow):
 
     def setup_window(self):
         self.setWindowTitle("Project1 - Sprint 4 - Ryan OConnor")
-        self.setGeometry(100, 100, 400, 500)
+        self.setGeometry(100, 100, 200, 250)
         # display_list = QListWidget(self)
         # self.list_control = display_list
         # self.put_data_in_list(self.data)
@@ -183,12 +183,12 @@ class GUIWindow(QMainWindow):
         update_data = QPushButton("Update Data", self)
         update_data.clicked.connect(self.update_data)
         update_data.resize(update_data.sizeHint())
-        update_data.move(150, 175)
+        update_data.move(10, 10)
         # implement hover over button to update status bar with file chosen
 
         render_data_button = QPushButton("Render data analysis", self)
         render_data_button.clicked.connect(self.render_data)
-        render_data_button.move(150, 200)
+        render_data_button.move(10, 40)
         render_data_button.resize(render_data_button.sizeHint())
         # disable this button until file has been selected
 
@@ -196,7 +196,7 @@ class GUIWindow(QMainWindow):
         quit_button.clicked.connect(QApplication.instance().quit)
         quit_button.clicked.connect(QCloseEvent)
         quit_button.resize(quit_button.sizeHint())
-        quit_button.move(150, 225)
+        quit_button.move(10, 70)
         quit_button.setToolTip("Quit program")
 
     def update_data(self):
