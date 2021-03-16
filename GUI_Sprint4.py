@@ -1,7 +1,7 @@
 import openpyxl
-from PySide6.QtWidgets import QPushButton, QApplication, QMessageBox, QFileDialog
+from PySide6.QtWidgets import QPushButton, QApplication, QMessageBox, QFileDialog, QWidget
 from PySide6.QtGui import QCloseEvent, QScreen, QCursor, Qt
-from PySide6.QtWidgets import QMainWindow, QLabel
+from PySide6.QtWidgets import QMainWindow, QLabel, QCheckBox
 import sqlite3
 from typing import Tuple
 from os import path
@@ -154,9 +154,45 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
         print(error)
 
 
+class RenderData(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.type_of_display = QLabel("Please choose how you'd like to display the data", self)
+        self.type_of_display.move(20, 20)
+        self.which_data = QLabel("Please which data you'd like to display", self)
+        self.which_data.move(460, 20)
+
+        self.color_coded_checkbox = QCheckBox("Color coded text in a list", self)
+        self.color_coded_checkbox.move(20, 50)
+        self.render_map_checkbox = QCheckBox("Render a Map", self)
+        self.render_map_checkbox.move(20, 90)
+
+        self.analysis_type1_checkbox = QCheckBox("Compare the number of college graduates in a state \n(for the most recent year) "
+                                       "with number of jobs in that \nstate that likely expect a college education.", self)
+        self.analysis_type1_checkbox.setGeometry(430, 20, 300, 100)
+        self.analysis_type2_checkbox = QCheckBox("Compare the 3 year graduate cohort declining balance \npercentage to "
+                                                 "the 25% salary in the state.", self)
+        #self.analysis_type1_checkbox.setGeometry(430, 1, 300, 100)
+        self.analysis_type2_checkbox.setGeometry(430, 70, 400, 100)
+
+       # self.analysis_type1_checkbox.move(460, 20)
+
+        self.setWindowTitle("Data Visualization for Project 1 - Sprint 4 - Ryan O'Connor - COMP490 - T/R")
+        self.setGeometry(100, 100, 800, 650)
+        self.center()
+
+
+    def center(self):
+        screen_center = QScreen.availableGeometry(QApplication.primaryScreen()).center()
+        self_geometry = self.frameGeometry()
+        self_geometry.moveCenter(screen_center)
+        self.move(self_geometry.topLeft())
+
+
 class GUIWindow(QMainWindow):
     def __init__(self, db_filename_from_main):
         super().__init__()
+        self.render_gui = RenderData()
         self.db_name = db_filename_from_main
         self.url_name = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&" \
                         "fields=id,school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_" \
@@ -224,13 +260,14 @@ class GUIWindow(QMainWindow):
         return file_name
 
     def render_data(self):
-        message = QMessageBox()
-        message.setText("Need to add more code to finish the project. Clicks Details for more info")
-        message.setInformativeText("(Informative text block)")
-        message.setWindowTitle("More coding required")
-        message.setDetailedText("This is where you will render the data in color coded text or on a graphical map")
-        message.setStandardButtons(QMessageBox.Ok)
-        message.exec_()
+        self.render_gui.show()
+        #message = QMessageBox()
+        #message.setText("Need to add more code to finish the project. Clicks Details for more info")
+        #message.setInformativeText("(Informative text block)")
+        #message.setWindowTitle("More coding required")
+        #message.setDetailedText("This is where you will render the data in color coded text or on a graphical map")
+        #message.setStandardButtons(QMessageBox.Ok)
+        #message.exec_()
         # render the color coded text or graphical map data
 
     def closeEvent(self, event: QCloseEvent):
