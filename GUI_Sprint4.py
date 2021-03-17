@@ -21,7 +21,7 @@ def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
     page_counter = 0
     final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
 
-    #for page_counter in range(meta_from_main[3]):
+    # for page_counter in range(meta_from_main[3]):
     for page_counter in range(1):
         response = requests.get(final_url)
 
@@ -121,7 +121,6 @@ def close_db(connection: sqlite3.Connection):
 
 
 def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
-
     try:
         work_book = openpyxl.load_workbook(xls_filename)
         work_sheet = work_book.active
@@ -186,9 +185,10 @@ class RenderData(QWidget):
         self.render_map_checkbox = QCheckBox("Render a Map", self)
         self.render_map_checkbox.move(20, 90)
 
-        self.analysis_type1_checkbox = QCheckBox("Compare the number of college graduates in a state \n(for the most recent "
-                                                 "year) with number of jobs in that \nstate that likely expect a college "
-                                                 "education.", self)
+        self.analysis_type1_checkbox = QCheckBox(
+            "Compare the number of college graduates in a state \n(for the most recent "
+            "year) with number of jobs in that \nstate that likely expect a college "
+            "education.", self)
         self.analysis_type1_checkbox.setGeometry(430, 20, 300, 100)
         self.analysis_type2_checkbox = QCheckBox("Compare the 3 year graduate cohort declining balance \npercentage to "
                                                  "the 25% salary in the state.", self)
@@ -217,27 +217,67 @@ class RenderData(QWidget):
         conn, cursor = open_db(self.db_name_from_visual_btn)
         # conn, cursor = open_db("school_data_excel_data_good.db")  # dont forget to unblock this
 
-        # school_export table, fetch all results, add to listbox
-        cursor.execute('SELECT * FROM school_export')
+        # school_export table, fetch all results
+        # cursor.execute('SELECT * FROM school_export')
+        cursor.execute('SELECT school_state, student_size_2018 FROM school_export')
         table = cursor.fetchall()
         final_data_list = []
 
         self.list_control.clear()
 
-        #
+        # Analysis 1 - I think if below certain threshold, make it red, otherwise make it green, specify in program lbl
+        # Iterate through shcool_export table, get the school state, and corresponding data to that is student_size_2018
+        # then assign that to the states dictionary I make;
+
+        # States:
+        # abbr = {"AL": "0", "AK": "0"}
+
+        abbr = {"AK": 0, "AL": 0, "AR": 0, "AS": 0, "AZ": 0, "CA": 0,
+                "CO": 0, "CT": 0, "DC": 0, "DE": 0, "FL": 0, "FM": 0, "GA": 0,
+                "GU": 0, "HI": 0, "IA": 0, "ID": 0, "IL": 0, "IN": 0, "KS": 0,
+                "KY": 0, "LA": 0, "MA": 0, "MD": 0, "ME": 0, "MH": 0, "MI": 0,
+                "MN": 0, "MO": 0, "MP": 0, "MS": 0, "MT": 0, "NC": 0, "ND": 0,
+                "NE": 0, "NH": 0, "NJ": 0, "NM": 0, "NV": 0, "NY": 0, "OH": 0,
+                "OK": 0, "OR": 0, "PA": 0, "PR": 0, "PW": 0, "RI": 0, "SC": 0,
+                "SD": 0, "TN": 0, "TX": 0, "UT": 0, "VA": 0, "VI": 0, "VT": 0,
+                "WA": 0, "WI": 0, "WV": 0, "WY": 0}
+
+        counter = 0
+
         for idx, row in enumerate(table):
             print(idx, row)
-            record = f"{row[1]}\t\t\t\t\t\t\t{row[7]}"
-            print(record)
+            record = f"{row[0]}, {row[1]}"
+
+            print("Record directly from the row in the table: state/studentsize2018-->", record)
             final_data_list.append(record)
             list_item = QListWidgetItem(record, listview=self.list_control)
+
+            if row[1] is None:
+                continue
+            else:
+                # row [0] is a STRING state name ... row [1] includes an INTEGER - 2018 student size
+
+                counter = counter + row[1]
+                state_abbr_from_table = row[0]
+                student_size_2018 = row[1]
+
+                state_total = abbr[state_abbr_from_table]
+
+                abbr[state_abbr_from_table] = state_total + student_size_2018
+                print(abbr[state_abbr_from_table], "totals from each states:")
+
+            print("should be same as counter", abbr["AL"], "\n")
 
             if (idx % 2) == 0:
                 list_item.setForeground(Qt.red)
             else:
-                list_item.setForeground(Qt.darkBlue)
+                list_item.setForeground(Qt.darkGreen)
 
-        print(self.list_control.count())
+        print(abbr)
+
+        print("Total count in list: ", self.list_control.count())
+
+        print("Counter value is: ", counter)
 
     def sort_ascending(self):
         self.list_control.sortItems(Qt.AscendingOrder)
