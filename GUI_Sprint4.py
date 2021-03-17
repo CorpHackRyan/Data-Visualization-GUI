@@ -215,23 +215,20 @@ class RenderData(QWidget):
 
     def display_visualization(self):
         conn, cursor = open_db(self.db_name_from_visual_btn)
-        # conn, cursor = open_db("school_data_excel_data_good.db")  # dont forget to unblock this
 
-        # school_export table, fetch all results
         # cursor.execute('SELECT * FROM school_export')
         cursor.execute('SELECT school_state, student_size_2018 FROM school_export')
         table = cursor.fetchall()
         final_data_list = []
 
         self.list_control.clear()
+        counter = 0
 
         # Analysis 1 - I think if below certain threshold, make it red, otherwise make it green, specify in program lbl
         # Iterate through shcool_export table, get the school state, and corresponding data to that is student_size_2018
         # then assign that to the states dictionary I make;
 
-        # States:
-        # abbr = {"AL": "0", "AK": "0"}
-
+        # Part 1
         abbr = {"AK": 0, "AL": 0, "AR": 0, "AS": 0, "AZ": 0, "CA": 0,
                 "CO": 0, "CT": 0, "DC": 0, "DE": 0, "FL": 0, "FM": 0, "GA": 0,
                 "GU": 0, "HI": 0, "IA": 0, "ID": 0, "IL": 0, "IN": 0, "KS": 0,
@@ -241,8 +238,6 @@ class RenderData(QWidget):
                 "OK": 0, "OR": 0, "PA": 0, "PR": 0, "PW": 0, "RI": 0, "SC": 0,
                 "SD": 0, "TN": 0, "TX": 0, "UT": 0, "VA": 0, "VI": 0, "VT": 0,
                 "WA": 0, "WI": 0, "WV": 0, "WY": 0}
-
-        counter = 0
 
         for idx, row in enumerate(table):
             print(idx, row)
@@ -282,6 +277,53 @@ class RenderData(QWidget):
 
         print("Total count in list: ", self.list_control.count())
         print("Counter value is: ", counter)
+
+        # Part 2
+        print("PART 2 *******************************************************")
+        # Compare part 1 to number of jobs in that state that likely expect a college education. (lets remove those
+        # usually require a specialized school like police academies or apprenticeships). So lets remove all
+        # those professions which have an occ_code that begins with 30-39 or 40-49.
+
+        # cursor.execute('SELECT * FROM school_export')
+        cursor.execute('SELECT area_title, occ_code, tot_emp FROM jobdata_by_state')
+        table = cursor.fetchall()
+        total_jobs_by_state = []
+
+        print("Table from part 2:", table)
+
+        for idx, row in enumerate(table):
+            total_jobs_by_state.append(record)
+            #list_item = QListWidgetItem(record, listview=self.list_control)
+
+            check_occ_code = row[1]
+            check_occ_code = int(check_occ_code[:2])
+
+            print(check_occ_code)
+
+            if 30 <= check_occ_code <= 49:
+                # dont add to the list, if its between the numbers im elminating
+                print(row[:2], "did not make the cut!")
+                print(idx, "index")
+            else:
+                print(row, "DID! MAKE THE CUT BITCH!")
+                print(idx, "index")
+                # counter = counter + row[1]
+                # state_abbr_from_table = row[0]
+                # student_size_2018 = row[1]
+                #
+                # state_total = abbr[state_abbr_from_table]
+                #
+                # abbr[state_abbr_from_table] = state_total + student_size_2018
+                # print(abbr[state_abbr_from_table], "totals from each states:")
+
+
+
+
+
+
+
+
+
 
     def sort_ascending(self):
         self.list_control.sortItems(Qt.AscendingOrder)
