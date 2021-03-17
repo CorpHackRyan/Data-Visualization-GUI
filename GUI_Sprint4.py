@@ -20,9 +20,8 @@ def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
 
     page_counter = 0
     final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
-    # final_url = f"{url}&api_key={secrets.api_key}&page=0"  # for testing purposes
 
-    # for page_counter in range(meta_from_main[3]):
+    #for page_counter in range(meta_from_main[3]):
     for page_counter in range(1):
         response = requests.get(final_url)
 
@@ -200,22 +199,51 @@ class RenderData(QWidget):
         self.render_data_button.setGeometry(10, 150, 770, 40)
         self.render_data_button.clicked.connect(self.display_visualization)
 
+        self.sort_ascending_button = QPushButton("Sort Ascending", self)
+        self.sort_ascending_button.setGeometry(10, 650, 120, 30)
+        self.sort_ascending_button.clicked.connect(self.sort_ascending)
+
+        self.sort_descending_button = QPushButton("Sort Descending", self)
+        self.sort_descending_button.setGeometry(130, 650, 120, 30)
+        self.sort_descending_button.clicked.connect(self.sort_descending)
+        # self.sort_ascending_button.setVisible(False)
+
         self.setWindowTitle("Data Visualization for Project 1 - Sprint 4 - Ryan O'Connor - COMP490 - T/R")
-        self.setGeometry(100, 100, 800, 650)
+        self.setGeometry(100, 100, 800, 700)
         self.center()
+        # self.show()
 
     def display_visualization(self):
-        print("display visual")
-        # conn, cursor = open_db(self.db_name_from_visual_btn)
-        conn, cursor = open_db("school_data_excel_data_good.db")  # dont forget to unblock this
+        conn, cursor = open_db(self.db_name_from_visual_btn)
+        # conn, cursor = open_db("school_data_excel_data_good.db")  # dont forget to unblock this
+
+        # school_export table, fetch all results, add to listbox
         cursor.execute('SELECT * FROM school_export')
         table = cursor.fetchall()
+        final_data_list = []
 
+        self.list_control.clear()
+
+        #
         for idx, row in enumerate(table):
             print(idx, row)
-            list_item = f"{row['school_id']}\t{row['school_city']}"
-            print(list_item)
-            #self.list_control = QListWidgetItem(row, listview=self.list_control)
+            record = f"{row[1]}\t\t\t\t\t\t\t{row[7]}"
+            print(record)
+            final_data_list.append(record)
+            list_item = QListWidgetItem(record, listview=self.list_control)
+
+            if (idx % 2) == 0:
+                list_item.setForeground(Qt.red)
+            else:
+                list_item.setForeground(Qt.darkBlue)
+
+        print(self.list_control.count())
+
+    def sort_ascending(self):
+        self.list_control.sortItems(Qt.AscendingOrder)
+
+    def sort_descending(self):
+        self.list_control.sortItems(Qt.DescendingOrder)
 
     def swap_color_checkbox(self):
         self.render_map_checkbox.setChecked(False)
