@@ -275,8 +275,12 @@ class RenderData(QWidget):
 
         print(abbr)
 
-        print("Total count in list: ", self.list_control.count())
+        for student_total_2018 in abbr:
+            abbr[student_total_2018] = abbr[student_total_2018] / 4
 
+        print(abbr)
+
+        print("Total count in list: ", self.list_control.count())
         print("Counter value is: ", counter)
 
     def sort_ascending(self):
