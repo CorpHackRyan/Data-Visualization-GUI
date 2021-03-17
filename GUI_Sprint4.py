@@ -1,5 +1,5 @@
 import openpyxl
-from PySide6.QtWidgets import QPushButton, QApplication, QMessageBox, QFileDialog, QWidget
+from PySide6.QtWidgets import QPushButton, QApplication, QMessageBox, QFileDialog, QWidget, QListWidget, QListWidgetItem
 from PySide6.QtGui import QCloseEvent, QScreen, QCursor, Qt
 from PySide6.QtWidgets import QMainWindow, QLabel, QCheckBox
 import sqlite3
@@ -165,14 +165,23 @@ def error_msg(error_message):
     QApplication.setOverrideCursor(QCursor(Qt.ArrowCursor))
     message.exec_()
 
+
 class RenderData(QWidget):
-    def __init__(self):
+    def __init__(self, db_name_from_visualize):
         super().__init__()
         self.type_of_display = QLabel("Please choose how you'd like to display the data", self)
         self.type_of_display.move(20, 20)
+        self.db_name_from_visual_btn = db_name_from_visualize
         self.which_data = QLabel("Please which data you'd like to display", self)
         self.which_data.move(460, 20)
 
+        # LISTBOXES
+        display_list = QListWidget(self)
+        self.list_control = display_list
+        display_list.resize(770, 440)
+        display_list.move(10, 200)
+
+        # CHECKBOXES
         self.color_coded_checkbox = QCheckBox("Color coded text in a list", self)
         self.color_coded_checkbox.move(20, 50)
         self.render_map_checkbox = QCheckBox("Render a Map", self)
@@ -186,12 +195,27 @@ class RenderData(QWidget):
                                                  "the 25% salary in the state.", self)
         self.analysis_type2_checkbox.setGeometry(430, 70, 400, 100)
 
+        # BUTTONS
         self.render_data_button = QPushButton("VISUALIZE", self)
         self.render_data_button.setGeometry(10, 150, 770, 40)
+        self.render_data_button.clicked.connect(self.display_visualization)
 
         self.setWindowTitle("Data Visualization for Project 1 - Sprint 4 - Ryan O'Connor - COMP490 - T/R")
         self.setGeometry(100, 100, 800, 650)
         self.center()
+
+    def display_visualization(self):
+        print("display visual")
+        # conn, cursor = open_db(self.db_name_from_visual_btn)
+        conn, cursor = open_db("school_data_excel_data_good.db")  # dont forget to unblock this
+        cursor.execute('SELECT * FROM school_export')
+        table = cursor.fetchall()
+
+        for idx, row in enumerate(table):
+            print(idx, row)
+            list_item = f"{row['school_id']}\t{row['school_city']}"
+            print(list_item)
+            #self.list_control = QListWidgetItem(row, listview=self.list_control)
 
     def swap_color_checkbox(self):
         self.render_map_checkbox.setChecked(False)
@@ -209,8 +233,8 @@ class RenderData(QWidget):
 class GUIWindow(QMainWindow):
     def __init__(self, db_filename_from_main):
         super().__init__()
-        self.render_gui = RenderData()
         self.db_name = db_filename_from_main
+        self.render_gui = RenderData(db_filename_from_main)
         self.url_name = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&" \
                         "fields=id,school.name,school.city,2018.student.size,2017.student.size,2017.earnings.3_yrs_after_" \
                         "completion.overall_count_over_poverty_line,2016.repayment.3_yr_repayment.overall,school.state," \
@@ -223,10 +247,6 @@ class GUIWindow(QMainWindow):
     def setup_window(self):
         self.setWindowTitle("Project1 - Sprint 4 - Ryan OConnor")
         self.setGeometry(100, 100, 200, 250)
-        # display_list = QListWidget(self)
-        # self.list_control = display_list
-        # self.put_data_in_list(self.data)
-        # display_list.resize(400,350)
         self.statusBar().showMessage("Ryan OConnor - Sprint 4 - Project 1 - "' "GUI PROJECT"')
         self.gui_components()
         self.center()
