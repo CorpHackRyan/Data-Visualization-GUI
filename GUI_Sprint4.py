@@ -164,6 +164,24 @@ def error_msg(error_message):
     message.exec_()
 
 
+def abbreviate_state(state_long_name):
+
+    states = {"Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR", "California": "CA", "Colorado": "CO", "Connecticut": "CT",
+              "Delaware": "DE", "District of Columbia": "DC", "Florida": "FL", "Georgia": "GA", "Hawaii": "HI", "Idaho": "ID",
+              "Illinois": "IL", "Indiana": "IN", "Iowa": "IA", "Kansas": "KS", "Kentucky": "KY", "Louisiana": "LA",
+              "Maine": "ME", "Maryland": "MD", "Massachusetts": "MA", "Michigan": "MI", "Minnesota": "MN", "Mississippi": "MS",
+              "Missouri": "MO", "Montana": "MT", "Nebraska": "NE", "Nevada": "NV", "New Hampshire": "NH", "New Jersey": "NJ",
+              "New Mexico": "NM", "New York": "NY", "North Carolina": "NC", "North Dakota": "ND", "Ohio": "OH", "Oklahoma": "OK",
+              "Oregon": "OR", "Pennsylvania": "PA", "Rhode Island": "RI", "South Carolina": "SC", "South Dakota": "SD",
+              "Tennessee": "TN", "Texas": "TX", "Utah": "UT", "Vermont": "VT", "Virginia": "VA", "Washington": "WA",
+              "West Virginia": "WV", "Wisconsin": "WI", "Wyoming": "WY", "Guam": "GU", "Puerto Rico": "PR",
+              "Virgin Islands": "VI", "Alabama": "AL"}
+
+    state_abbreviated = states[state_long_name]
+
+    return state_abbreviated
+
+
 class RenderData(QWidget):
     def __init__(self, db_name_from_visualize):
         super().__init__()
@@ -216,7 +234,6 @@ class RenderData(QWidget):
     def display_visualization(self):
         conn, cursor = open_db(self.db_name_from_visual_btn)
 
-        # cursor.execute('SELECT * FROM school_export')
         cursor.execute('SELECT school_state, student_size_2018 FROM school_export')
         table = cursor.fetchall()
         final_data_list = []
@@ -224,12 +241,9 @@ class RenderData(QWidget):
         self.list_control.clear()
         counter = 0
 
-        # Analysis 1 - I think if below certain threshold, make it red, otherwise make it green, specify in program lbl
-        # Iterate through shcool_export table, get the school state, and corresponding data to that is student_size_2018
-        # then assign that to the states dictionary I make;
-
-        # Part 1
-        abbr = {"AK": 0, "AL": 0, "AR": 0, "AS": 0, "AZ": 0, "CA": 0,
+        # Data Analyis Part 1
+        # Part 1A - print out # of grad students per state
+        num_grads_in_state = {"AK": 0, "AL": 0, "AR": 0, "AS": 0, "AZ": 0, "CA": 0,
                 "CO": 0, "CT": 0, "DC": 0, "DE": 0, "FL": 0, "FM": 0, "GA": 0,
                 "GU": 0, "HI": 0, "IA": 0, "ID": 0, "IL": 0, "IN": 0, "KS": 0,
                 "KY": 0, "LA": 0, "MA": 0, "MD": 0, "ME": 0, "MH": 0, "MI": 0,
@@ -249,81 +263,88 @@ class RenderData(QWidget):
 
             if row[1] is None:
                 continue
+
             else:
                 # row [0] is a STRING state name ... row [1] includes an INTEGER - 2018 student size
-
                 counter = counter + row[1]
                 state_abbr_from_table = row[0]
                 student_size_2018 = row[1]
 
-                state_total = abbr[state_abbr_from_table]
+                state_total = num_grads_in_state[state_abbr_from_table]
 
-                abbr[state_abbr_from_table] = state_total + student_size_2018
-                print(abbr[state_abbr_from_table], "totals from each states:")
+                num_grads_in_state[state_abbr_from_table] = state_total + student_size_2018
+                print(num_grads_in_state[state_abbr_from_table], "totals from each states:")
 
-            print("should be same as counter", abbr["AL"], "\n")
+            print("should be same as counter", num_grads_in_state["CA"], "\n")
 
             if (idx % 2) == 0:
                 list_item.setForeground(Qt.red)
             else:
                 list_item.setForeground(Qt.darkGreen)
 
-        print(abbr)
-
-        for student_total_2018 in abbr:
-            abbr[student_total_2018] = abbr[student_total_2018] / 4
-
-        print(abbr)
+        # I'm dividing by 4 years here, to simplify the size of a senior graduating class
+        for student_total_2018 in num_grads_in_state:
+            num_grads_in_state[student_total_2018] = num_grads_in_state[student_total_2018] / 4
 
         print("Total count in list: ", self.list_control.count())
         print("Counter value is: ", counter)
 
-        # Part 2
-        print("PART 2 *******************************************************")
+        final_answer = num_grads_in_state
+
+
+
+        # Part 1B
+        print("1B part *******************************************************")
         # Compare part 1 to number of jobs in that state that likely expect a college education. (lets remove those
         # usually require a specialized school like police academies or apprenticeships). So lets remove all
         # those professions which have an occ_code that begins with 30-39 or 40-49.
 
-        # cursor.execute('SELECT * FROM school_export')
+        num_jobs_in_state = {"AK": 0, "AL": 0, "AR": 0, "AS": 0, "AZ": 0, "CA": 0,
+                              "CO": 0, "CT": 0, "DC": 0, "DE": 0, "FL": 0, "FM": 0, "GA": 0,
+                              "GU": 0, "HI": 0, "IA": 0, "ID": 0, "IL": 0, "IN": 0, "KS": 0,
+                              "KY": 0, "LA": 0, "MA": 0, "MD": 0, "ME": 0, "MH": 0, "MI": 0,
+                              "MN": 0, "MO": 0, "MP": 0, "MS": 0, "MT": 0, "NC": 0, "ND": 0,
+                              "NE": 0, "NH": 0, "NJ": 0, "NM": 0, "NV": 0, "NY": 0, "OH": 0,
+                              "OK": 0, "OR": 0, "PA": 0, "PR": 0, "PW": 0, "RI": 0, "SC": 0,
+                              "SD": 0, "TN": 0, "TX": 0, "UT": 0, "VA": 0, "VI": 0, "VT": 0,
+                              "WA": 0, "WI": 0, "WV": 0, "WY": 0}
+
         cursor.execute('SELECT area_title, occ_code, tot_emp FROM jobdata_by_state')
         table = cursor.fetchall()
         total_jobs_by_state = []
-
-        print("Table from part 2:", table)
 
         for idx, row in enumerate(table):
             total_jobs_by_state.append(record)
             #list_item = QListWidgetItem(record, listview=self.list_control)
 
+            state_from_school_export = str(row[0])
             check_occ_code = row[1]
+            tot_emp_jobs_in_state = int(row[2])
             check_occ_code = int(check_occ_code[:2])
-
-            print(check_occ_code)
+            counter = 0
 
             if 30 <= check_occ_code <= 49:
-                # dont add to the list, if its between the numbers im elminating
-                print(row[:2], "did not make the cut!")
-                print(idx, "index")
+                #print(row[:2], "did not make the cut!", idx, "<-- index")
+                continue
+
             else:
-                print(row, "DID! MAKE THE CUT BITCH!")
-                print(idx, "index")
-                # counter = counter + row[1]
-                # state_abbr_from_table = row[0]
-                # student_size_2018 = row[1]
-                #
-                # state_total = abbr[state_abbr_from_table]
-                #
-                # abbr[state_abbr_from_table] = state_total + student_size_2018
-                # print(abbr[state_abbr_from_table], "totals from each states:")
+                # print(abbr_state, "made the cut", "occ code ->", check_occ_code)
 
+                #print(abbreviate_state(state_from_school_export), "Total jobs in state: ", tot_emp_jobs_in_state)
 
+                counter = counter + tot_emp_jobs_in_state
+                state_abbr_from_table = abbreviate_state(state_from_school_export)
+                student_size_2018 = row[1]
 
+                tot_emp_job_total = num_jobs_in_state[state_abbr_from_table]
 
+                state_total = num_jobs_in_state[state_abbr_from_table]
 
+                num_jobs_in_state[state_abbr_from_table] = state_total + tot_emp_job_total
 
+                print(state_abbr_from_table, num_jobs_in_state[state_abbr_from_table], "totals from each states:")
 
-
-
+        print("should be same as counter", num_jobs_in_state["AL"], "\n")
 
     def sort_ascending(self):
         self.list_control.sortItems(Qt.AscendingOrder)
