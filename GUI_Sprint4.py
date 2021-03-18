@@ -165,13 +165,17 @@ def error_msg(error_message):
 
 
 def abbreviate_state(state_long_name):
-
-    states = {"Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR", "California": "CA", "Colorado": "CO", "Connecticut": "CT",
-              "Delaware": "DE", "District of Columbia": "DC", "Florida": "FL", "Georgia": "GA", "Hawaii": "HI", "Idaho": "ID",
+    states = {"Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR", "California": "CA", "Colorado": "CO",
+              "Connecticut": "CT",
+              "Delaware": "DE", "District of Columbia": "DC", "Florida": "FL", "Georgia": "GA", "Hawaii": "HI",
+              "Idaho": "ID",
               "Illinois": "IL", "Indiana": "IN", "Iowa": "IA", "Kansas": "KS", "Kentucky": "KY", "Louisiana": "LA",
-              "Maine": "ME", "Maryland": "MD", "Massachusetts": "MA", "Michigan": "MI", "Minnesota": "MN", "Mississippi": "MS",
-              "Missouri": "MO", "Montana": "MT", "Nebraska": "NE", "Nevada": "NV", "New Hampshire": "NH", "New Jersey": "NJ",
-              "New Mexico": "NM", "New York": "NY", "North Carolina": "NC", "North Dakota": "ND", "Ohio": "OH", "Oklahoma": "OK",
+              "Maine": "ME", "Maryland": "MD", "Massachusetts": "MA", "Michigan": "MI", "Minnesota": "MN",
+              "Mississippi": "MS",
+              "Missouri": "MO", "Montana": "MT", "Nebraska": "NE", "Nevada": "NV", "New Hampshire": "NH",
+              "New Jersey": "NJ",
+              "New Mexico": "NM", "New York": "NY", "North Carolina": "NC", "North Dakota": "ND", "Ohio": "OH",
+              "Oklahoma": "OK",
               "Oregon": "OR", "Pennsylvania": "PA", "Rhode Island": "RI", "South Carolina": "SC", "South Dakota": "SD",
               "Tennessee": "TN", "Texas": "TX", "Utah": "UT", "Vermont": "VT", "Virginia": "VA", "Washington": "WA",
               "West Virginia": "WV", "Wisconsin": "WI", "Wyoming": "WY", "Guam": "GU", "Puerto Rico": "PR",
@@ -239,19 +243,18 @@ class RenderData(QWidget):
         final_data_list = []
 
         self.list_control.clear()
-        counter = 0
+        # counter = 0
 
-        # Data Analyis Part 1
-        # Part 1A - print out # of grad students per state
+        # ################################  DATA ANALYSIS - PART 1A  ##################################
         num_grads_in_state = {"AK": 0, "AL": 0, "AR": 0, "AS": 0, "AZ": 0, "CA": 0,
-                "CO": 0, "CT": 0, "DC": 0, "DE": 0, "FL": 0, "FM": 0, "GA": 0,
-                "GU": 0, "HI": 0, "IA": 0, "ID": 0, "IL": 0, "IN": 0, "KS": 0,
-                "KY": 0, "LA": 0, "MA": 0, "MD": 0, "ME": 0, "MH": 0, "MI": 0,
-                "MN": 0, "MO": 0, "MP": 0, "MS": 0, "MT": 0, "NC": 0, "ND": 0,
-                "NE": 0, "NH": 0, "NJ": 0, "NM": 0, "NV": 0, "NY": 0, "OH": 0,
-                "OK": 0, "OR": 0, "PA": 0, "PR": 0, "PW": 0, "RI": 0, "SC": 0,
-                "SD": 0, "TN": 0, "TX": 0, "UT": 0, "VA": 0, "VI": 0, "VT": 0,
-                "WA": 0, "WI": 0, "WV": 0, "WY": 0}
+                              "CO": 0, "CT": 0, "DC": 0, "DE": 0, "FL": 0, "FM": 0, "GA": 0,
+                              "GU": 0, "HI": 0, "IA": 0, "ID": 0, "IL": 0, "IN": 0, "KS": 0,
+                              "KY": 0, "LA": 0, "MA": 0, "MD": 0, "ME": 0, "MH": 0, "MI": 0,
+                              "MN": 0, "MO": 0, "MP": 0, "MS": 0, "MT": 0, "NC": 0, "ND": 0,
+                              "NE": 0, "NH": 0, "NJ": 0, "NM": 0, "NV": 0, "NY": 0, "OH": 0,
+                              "OK": 0, "OR": 0, "PA": 0, "PR": 0, "PW": 0, "RI": 0, "SC": 0,
+                              "SD": 0, "TN": 0, "TX": 0, "UT": 0, "VA": 0, "VI": 0, "VT": 0,
+                              "WA": 0, "WI": 0, "WV": 0, "WY": 0}
 
         for idx, row in enumerate(table):
             print(idx, row)
@@ -259,14 +262,13 @@ class RenderData(QWidget):
 
             print("Record directly from the row in the table: state/studentsize2018-->", record)
             final_data_list.append(record)
-            list_item = QListWidgetItem(record, listview=self.list_control)
 
             if row[1] is None:
                 continue
 
             else:
                 # row [0] is a STRING state name ... row [1] includes an INTEGER - 2018 student size
-                #counter = counter + row[1]
+                # counter = counter + row[1]
                 state_abbr_from_table = row[0]
                 student_size_2018 = row[1]
 
@@ -277,37 +279,21 @@ class RenderData(QWidget):
 
             print("should be same as counter", num_grads_in_state["CA"], "\n")
 
-            if (idx % 2) == 0:
-                list_item.setForeground(Qt.red)
-            else:
-                list_item.setForeground(Qt.darkGreen)
-
         # I'm dividing by 4 years here, to simplify the size of a senior graduating class
         for student_total_2018 in num_grads_in_state:
             num_grads_in_state[student_total_2018] = num_grads_in_state[student_total_2018] / 4
 
-        print("Total count in list: ", self.list_control.count())
-        print("Counter value is: ", counter)
-
-        final_answer = num_grads_in_state
-
-
-
-        # Part 1B
-        print("1B part *******************************************************")
-        # Compare part 1 to number of jobs in that state that likely expect a college education. (lets remove those
-        # usually require a specialized school like police academies or apprenticeships). So lets remove all
-        # those professions which have an occ_code that begins with 30-39 or 40-49.
+        # ################################  DATA ANALYSIS - PART 1B   #########################
 
         num_jobs_in_state = {"AK": 0, "AL": 0, "AR": 0, "AS": 0, "AZ": 0, "CA": 0,
-                              "CO": 0, "CT": 0, "DC": 0, "DE": 0, "FL": 0, "FM": 0, "GA": 0,
-                              "GU": 0, "HI": 0, "IA": 0, "ID": 0, "IL": 0, "IN": 0, "KS": 0,
-                              "KY": 0, "LA": 0, "MA": 0, "MD": 0, "ME": 0, "MH": 0, "MI": 0,
-                              "MN": 0, "MO": 0, "MP": 0, "MS": 0, "MT": 0, "NC": 0, "ND": 0,
-                              "NE": 0, "NH": 0, "NJ": 0, "NM": 0, "NV": 0, "NY": 0, "OH": 0,
-                              "OK": 0, "OR": 0, "PA": 0, "PR": 0, "PW": 0, "RI": 0, "SC": 0,
-                              "SD": 0, "TN": 0, "TX": 0, "UT": 0, "VA": 0, "VI": 0, "VT": 0,
-                              "WA": 0, "WI": 0, "WV": 0, "WY": 0}
+                             "CO": 0, "CT": 0, "DC": 0, "DE": 0, "FL": 0, "FM": 0, "GA": 0,
+                             "GU": 0, "HI": 0, "IA": 0, "ID": 0, "IL": 0, "IN": 0, "KS": 0,
+                             "KY": 0, "LA": 0, "MA": 0, "MD": 0, "ME": 0, "MH": 0, "MI": 0,
+                             "MN": 0, "MO": 0, "MP": 0, "MS": 0, "MT": 0, "NC": 0, "ND": 0,
+                             "NE": 0, "NH": 0, "NJ": 0, "NM": 0, "NV": 0, "NY": 0, "OH": 0,
+                             "OK": 0, "OR": 0, "PA": 0, "PR": 0, "PW": 0, "RI": 0, "SC": 0,
+                             "SD": 0, "TN": 0, "TX": 0, "UT": 0, "VA": 0, "VI": 0, "VT": 0,
+                             "WA": 0, "WI": 0, "WV": 0, "WY": 0}
 
         cursor.execute('SELECT area_title, occ_code, tot_emp FROM jobdata_by_state')
         table = cursor.fetchall()
@@ -336,22 +322,33 @@ class RenderData(QWidget):
                 tot_emp = num_jobs_in_state[abbr_state]
                 num_jobs_in_state[abbr_state] = tot_emp + tot_emp_jobs_in_state
 
-                # row [0] is a STRING state name ... row [1] includes an INTEGER - 2018 student size
-                # counter = counter + row[1]
-                # state_abbr_from_table = row[0]
-                # student_size_2018 = row[1]
-
-                # state_total = num_grads_in_state[state_abbr_from_table]
-
-                # num_grads_in_state[state_abbr_from_table] = state_total + student_size_2018
-                print(num_jobs_in_state[abbr_state], "totals from each states:")
-
-
-
         print("should be same as counter", num_jobs_in_state["WY"], "\n")
 
-        print(num_grads_in_state)
         print(num_jobs_in_state)
+        print(num_grads_in_state)
+
+        compare_total_jobs_to_grads = {k: (num_jobs_in_state[k] / num_grads_in_state[k]) for k in num_jobs_in_state}
+
+        print("Final numbers", compare_total_jobs_to_grads, )
+
+        for key in compare_total_jobs_to_grads:
+            # print(key, '->', compare_total_jobs_to_grads[key])
+            # display_text = f"{key}\t {compare_total_jobs_to_grads[key]}"
+            total_jobs_rounded = (round(compare_total_jobs_to_grads[key], 2))
+
+            if total_jobs_rounded == 0:
+                display_text = f"State: {key}\t Total jobs: {num_jobs_in_state[key]}\t\t Total college grads: " \
+                               f"{num_grads_in_state[key]}\t\t {total_jobs_rounded} jobs available "\
+                               f"per graduating student"
+            else:
+                display_text = f"State: {key}\t Total jobs: {num_jobs_in_state[key]}\t Total college grads: " \
+                               f"{num_grads_in_state[key]}\t\t {total_jobs_rounded} jobs available "\
+                               f"per graduating student"
+
+            list_item = QListWidgetItem(display_text, listview=self.list_control)
+            list_item.setForeground(Qt.darkRed)
+
+        close_db(conn)
 
     def sort_ascending(self):
         self.list_control.sortItems(Qt.AscendingOrder)
