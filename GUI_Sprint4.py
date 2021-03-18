@@ -266,7 +266,7 @@ class RenderData(QWidget):
 
             else:
                 # row [0] is a STRING state name ... row [1] includes an INTEGER - 2018 student size
-                counter = counter + row[1]
+                #counter = counter + row[1]
                 state_abbr_from_table = row[0]
                 student_size_2018 = row[1]
 
@@ -312,39 +312,46 @@ class RenderData(QWidget):
         cursor.execute('SELECT area_title, occ_code, tot_emp FROM jobdata_by_state')
         table = cursor.fetchall()
         total_jobs_by_state = []
+        counter = 0
 
         for idx, row in enumerate(table):
             total_jobs_by_state.append(record)
-            #list_item = QListWidgetItem(record, listview=self.list_control)
+            # list_item = QListWidgetItem(record, listview=self.list_control)
 
-            state_from_school_export = str(row[0])
             check_occ_code = row[1]
-            tot_emp_jobs_in_state = int(row[2])
             check_occ_code = int(check_occ_code[:2])
-            counter = 0
 
             if 30 <= check_occ_code <= 49:
-                #print(row[:2], "did not make the cut!", idx, "<-- index")
+                # print(row[:2], "did not make the cut!", idx, "<-- index")
                 continue
 
             else:
-                # print(abbr_state, "made the cut", "occ code ->", check_occ_code)
+                state_from_school_export = str(row[0])
+                print(state_from_school_export, "made the cut", "occ code ->", check_occ_code,
+                      "state abbreviated: ", abbreviate_state(state_from_school_export),
+                      "total_emp col: ", row[2])
 
-                #print(abbreviate_state(state_from_school_export), "Total jobs in state: ", tot_emp_jobs_in_state)
+                abbr_state = abbreviate_state(state_from_school_export)
+                tot_emp_jobs_in_state = int(row[2])
+                tot_emp = num_jobs_in_state[abbr_state]
+                num_jobs_in_state[abbr_state] = tot_emp + tot_emp_jobs_in_state
 
-                counter = counter + tot_emp_jobs_in_state
-                state_abbr_from_table = abbreviate_state(state_from_school_export)
-                student_size_2018 = row[1]
+                # row [0] is a STRING state name ... row [1] includes an INTEGER - 2018 student size
+                # counter = counter + row[1]
+                # state_abbr_from_table = row[0]
+                # student_size_2018 = row[1]
 
-                tot_emp_job_total = num_jobs_in_state[state_abbr_from_table]
+                # state_total = num_grads_in_state[state_abbr_from_table]
 
-                state_total = num_jobs_in_state[state_abbr_from_table]
+                # num_grads_in_state[state_abbr_from_table] = state_total + student_size_2018
+                print(num_jobs_in_state[abbr_state], "totals from each states:")
 
-                num_jobs_in_state[state_abbr_from_table] = state_total + tot_emp_job_total
 
-                print(state_abbr_from_table, num_jobs_in_state[state_abbr_from_table], "totals from each states:")
 
-        print("should be same as counter", num_jobs_in_state["AL"], "\n")
+        print("should be same as counter", num_jobs_in_state["WY"], "\n")
+
+        print(num_grads_in_state)
+        print(num_jobs_in_state)
 
     def sort_ascending(self):
         self.list_control.sortItems(Qt.AscendingOrder)
