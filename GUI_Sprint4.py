@@ -195,7 +195,7 @@ class RenderData(QWidget):
         self.which_data = QLabel("Please which data you'd like to display", self)
         self.which_data.move(460, 20)
 
-        # LISTBOXES
+        # LIST BOXES
         display_list = QListWidget(self)
         self.list_control = display_list
         display_list.resize(770, 440)
@@ -243,7 +243,6 @@ class RenderData(QWidget):
         final_data_list = []
 
         self.list_control.clear()
-        # counter = 0
 
         # ################################  DATA ANALYSIS - PART 1A  ##################################
         num_grads_in_state = {"AK": 0, "AL": 0, "AR": 0, "AS": 0, "AZ": 0, "CA": 0,
