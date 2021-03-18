@@ -276,7 +276,7 @@ class RenderData(QWidget):
                 num_grads_in_state[state_abbr_from_table] = state_total + student_size_2018
                 print(num_grads_in_state[state_abbr_from_table], "totals from each states:")
 
-            print("should be same as counter", num_grads_in_state["CA"], "\n")
+            # print("should be same as counter", num_grads_in_state["CA"], "\n")
 
         # I'm dividing by 4 years here, to simplify the size of a senior graduating class
         for student_total_2018 in num_grads_in_state:
@@ -297,7 +297,6 @@ class RenderData(QWidget):
         cursor.execute('SELECT area_title, occ_code, tot_emp FROM jobdata_by_state')
         table = cursor.fetchall()
         total_jobs_by_state = []
-        counter = 0
 
         for idx, row in enumerate(table):
             total_jobs_by_state.append(record)
