@@ -2,5 +2,6 @@ requests
 openpyxl
 plotly
 Pyside6
+pandas
 
 
