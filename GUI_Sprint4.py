@@ -11,6 +11,7 @@ import math
 import os
 import DisplayMap
 
+
 def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
     #  meta_from_main is a list with the following index descriptions
     #                 0 index = total results
@@ -329,12 +330,8 @@ class RenderData(QWidget):
 
         print("Final numbers", compare_total_jobs_to_grads, )
 
-
-
         display_data = open("display_map_data.csv", "w+")
         display_data.writelines("state,data\n")
-
-
 
         for key in compare_total_jobs_to_grads:
             # print(key, '->', compare_total_jobs_to_grads[key])
@@ -356,17 +353,11 @@ class RenderData(QWidget):
             list_item = QListWidgetItem(display_text, listview=self.list_control)
             list_item.setForeground(Qt.darkRed)
 
-
         display_data.close()
         DisplayMap.display_map(compare_total_jobs_to_grads)
 
         # DATA ANALYSIS PART 2A
         # compare the 3 year graduate cohort declining balance percentage to the 25% salary in the state
-
-
-
-
-
 
         close_db(conn)
 
