@@ -329,6 +329,13 @@ class RenderData(QWidget):
 
         print("Final numbers", compare_total_jobs_to_grads, )
 
+
+
+        display_data = open("display_map_data.csv", "w+")
+        display_data.writelines("state,data\n")
+
+
+
         for key in compare_total_jobs_to_grads:
             # print(key, '->', compare_total_jobs_to_grads[key])
             # display_text = f"{key}\t {compare_total_jobs_to_grads[key]}"
@@ -338,15 +345,20 @@ class RenderData(QWidget):
                 display_text = f"State: {key}\t Total jobs: {num_jobs_in_state[key]}\t\t Total college grads: " \
                                f"{num_grads_in_state[key]}\t\t {total_jobs_rounded} jobs available "\
                                f"per graduating student"
+                display_data.writelines(f"{key}, {total_jobs_rounded}\n")
+
             else:
                 display_text = f"State: {key}\t Total jobs: {num_jobs_in_state[key]}\t Total college grads: " \
                                f"{num_grads_in_state[key]}\t\t {total_jobs_rounded} jobs available "\
                                f"per graduating student"
+                display_data.writelines(f"{key}, {total_jobs_rounded}\n")
 
             list_item = QListWidgetItem(display_text, listview=self.list_control)
             list_item.setForeground(Qt.darkRed)
 
-        # DisplayMap.display_map(num_jobs_in_state, num_jobs_in_state)
+
+        display_data.close()
+        DisplayMap.display_map(compare_total_jobs_to_grads)
 
         # DATA ANALYSIS PART 2A
         # compare the 3 year graduate cohort declining balance percentage to the 25% salary in the state
