@@ -241,7 +241,7 @@ class RenderData(QWidget):
 
         cursor.execute('SELECT school_state, student_size_2018 FROM school_export')
         table = cursor.fetchall()
-        final_data_list = []
+        # final_data_list = []
 
         self.list_control.clear()
 
@@ -261,7 +261,7 @@ class RenderData(QWidget):
             record = f"{row[0]}, {row[1]}"
 
             print("Record directly from the row in the table: state/studentsize2018-->", record)
-            final_data_list.append(record)
+            # final_data_list.append(record)
 
             if row[1] is None:
                 continue
@@ -301,7 +301,6 @@ class RenderData(QWidget):
 
         for idx, row in enumerate(table):
             total_jobs_by_state.append(record)
-            # list_item = QListWidgetItem(record, listview=self.list_control)
 
             check_occ_code = row[1]
             check_occ_code = int(check_occ_code[:2])
@@ -357,7 +356,33 @@ class RenderData(QWidget):
         DisplayMap.display_map(compare_total_jobs_to_grads)
 
         # DATA ANALYSIS PART 2A
-        # compare the 3 year graduate cohort declining balance percentage to the 25% salary in the state
+        # Compare the 3 year graduate cohort declining balance percentage to the 25% salary in the state
+
+        # Select school_state, repayment_repayment_cohort_3_year_declining_balance_2016 from school_export
+        # Update a dictionary of states with sums of the data from each state in above cursor
+        #
+        # Select area_title and a_pct25 from jobdata_by_state
+        # Update the area_title to convert to state (use earlier function)
+        # Update dictionary of states with sums of the data for each state
+        #
+        # Then divide a_pct25 / 2016_cohort
+
+        # PART 2A
+        cursor.execute('SELECT school_state, repayment_repayment_cohort_3_year_declining_balance_2016 FROM school_export')
+        table = cursor.fetchall()
+
+        for idx, row in enumerate(table):
+            print(idx, row)
+            record = f"From school_export: [school_state] [repayment_2016] {row[0]}, {row[1]}"
+
+        # PART 2B
+        cursor.execute(
+            'SELECT area_title, a_pct25 FROM jobdata_by_state')
+        table = cursor.fetchall()
+
+        for idx, row in enumerate(table):
+            print(idx, row)
+            record = f"From school_export: [school_state] [repayment_2016] {row[0]}, {row[1]}"
 
         close_db(conn)
 
