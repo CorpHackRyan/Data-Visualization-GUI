@@ -346,7 +346,7 @@ class RenderData(QWidget):
             list_item = QListWidgetItem(display_text, listview=self.list_control)
             list_item.setForeground(Qt.darkRed)
 
-        DisplayMap.display_map(num_jobs_in_state, num_jobs_in_state)
+        # DisplayMap.display_map(num_jobs_in_state, num_jobs_in_state)
 
         # DATA ANALYSIS PART 2A
         # compare the 3 year graduate cohort declining balance percentage to the 25% salary in the state
