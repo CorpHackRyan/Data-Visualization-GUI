@@ -1,3 +1,6 @@
 requests
 openpyxl
+plotly
+Pyside6
+
 
