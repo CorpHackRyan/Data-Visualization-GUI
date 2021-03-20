@@ -1,6 +1,6 @@
 import openpyxl
 from PySide6.QtWidgets import QPushButton, QApplication, QMessageBox, QFileDialog, QWidget, QListWidget, QListWidgetItem
-from PySide6.QtGui import QCloseEvent, QScreen, QCursor, Qt
+from PySide6.QtGui import QCloseEvent, QScreen, QCursor, Qt, QFont
 from PySide6.QtWidgets import QMainWindow, QLabel, QCheckBox
 import sqlite3
 from typing import Tuple
@@ -190,11 +190,16 @@ def abbreviate_state(state_long_name):
 class RenderData(QWidget):
     def __init__(self, db_name_from_visualize):
         super().__init__()
+        self.db_name_from_visual_btn = db_name_from_visualize
         self.type_of_display = QLabel("Please choose how you'd like to display the data", self)
         self.type_of_display.move(20, 20)
-        self.db_name_from_visual_btn = db_name_from_visualize
-        self.which_data = QLabel("Please which data you'd like to display", self)
-        self.which_data.move(460, 20)
+        self.type_of_display.setStyleSheet("border: 1px solid black;")
+        self.type_of_display.setFont(QFont("Calibre", 12))
+
+        self.which_data = QLabel("Please select which data you'd like to display", self)
+        self.which_data.move(430, 20)
+        self.which_data.setStyleSheet(("border: 1px solid black"))
+        self.which_data.setFont(QFont("Calibre", 12))
 
         # LIST BOXES
         display_list = QListWidget(self)
@@ -204,9 +209,9 @@ class RenderData(QWidget):
 
         # CHECKBOXES
         self.color_coded_checkbox = QCheckBox("Color coded text in a list", self)
-        self.color_coded_checkbox.move(20, 50)
+        self.color_coded_checkbox.move(100, 60)
         self.render_map_checkbox = QCheckBox("Render a Map", self)
-        self.render_map_checkbox.move(20, 90)
+        self.render_map_checkbox.move(100, 90)
 
         self.analysis_type1_checkbox = QCheckBox(
             "Compare the number of college graduates in a state \n(for the most recent "
@@ -229,12 +234,14 @@ class RenderData(QWidget):
         self.sort_descending_button = QPushButton("Sort Descending", self)
         self.sort_descending_button.setGeometry(130, 650, 120, 30)
         self.sort_descending_button.clicked.connect(self.sort_descending)
-        # self.sort_ascending_button.setVisible(False)
+
+        self.close_visual_window_button = QPushButton("CLOSE", self)
+        self.close_visual_window_button.setGeometry(660, 650, 120, 30)
+        self.close_visual_window_button.clicked.connect(lambda: self.close())
 
         self.setWindowTitle("Data Visualization for Project 1 - Sprint 4 - Ryan O'Connor - COMP490 - T/R")
         self.setGeometry(100, 100, 800, 700)
         self.center()
-        # self.show()
 
     def display_visualization(self):
         conn, cursor = open_db(self.db_name_from_visual_btn)
@@ -372,8 +379,8 @@ class RenderData(QWidget):
         table = cursor.fetchall()
 
         for idx, row in enumerate(table):
-            print(idx, row)
             record = f"From school_export: [school_state] [repayment_2016] {row[0]}, {row[1]}"
+            print(record) # print(idx, row, record)
 
         # PART 2B
         cursor.execute(
@@ -381,8 +388,8 @@ class RenderData(QWidget):
         table = cursor.fetchall()
 
         for idx, row in enumerate(table):
-            print(idx, row)
-            record = f"From school_export: [school_state] [repayment_2016] {row[0]}, {row[1]}"
+            record = f"From jobdata_by_state: [school_state] [a_pct25] {row[0]}, {row[1]}"
+            print(record) # print(idx, row, record)
 
         close_db(conn)
 
@@ -408,6 +415,7 @@ class RenderData(QWidget):
 class GUIWindow(QMainWindow):
     def __init__(self, db_filename_from_main):
         super().__init__()
+        self.setWindowFlag(Qt.WindowMinMaxButtonsHint, False)
         self.db_name = db_filename_from_main
         self.render_gui = RenderData(db_filename_from_main)
         self.url_name = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&" \
@@ -421,8 +429,9 @@ class GUIWindow(QMainWindow):
 
     def setup_window(self):
         self.setWindowTitle("Project1 - Sprint 4 - Ryan OConnor")
-        self.setGeometry(100, 100, 200, 250)
-        self.statusBar().showMessage("Ryan OConnor - Sprint 4 - Project 1 - "' "GUI PROJECT"')
+        self.setGeometry(100, 100, 400, 70)
+        self.setFixedSize(400, 70)
+        self.statusBar().showMessage("GUI PROJECT")
         self.gui_components()
         self.center()
         self.show()
@@ -431,12 +440,12 @@ class GUIWindow(QMainWindow):
         update_data = QPushButton("Update Data", self)
         update_data.clicked.connect(self.update_data)
         update_data.resize(update_data.sizeHint())
-        update_data.move(10, 10)
+        update_data.move(20, 15)
         # implement hover over button to update status bar with file chosen
 
         render_data_button = QPushButton("Render data analysis", self)
         render_data_button.clicked.connect(self.render_data)
-        render_data_button.move(10, 40)
+        render_data_button.move(140, 15)
         render_data_button.resize(render_data_button.sizeHint())
         # disable this button until file has been selected
 
@@ -444,7 +453,7 @@ class GUIWindow(QMainWindow):
         quit_button.clicked.connect(QApplication.instance().quit)
         quit_button.clicked.connect(QCloseEvent)
         quit_button.resize(quit_button.sizeHint())
-        quit_button.move(10, 70)
+        quit_button.move(300, 15)
         quit_button.setToolTip("Quit program")
 
     def update_data(self):

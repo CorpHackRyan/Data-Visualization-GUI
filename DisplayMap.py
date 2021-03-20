@@ -12,7 +12,7 @@ def display_map(compare_total_jobs_total_data):
         z=df['data'].astype(float),  # Data to be color-coded
         locationmode='USA-states',  # set of locations match entries in `locations`
         colorscale='Greens',
-        colorbar_title="Jobs",
+        colorbar_title="Jobs avail per graduate",
     ))
 
     fig.update_layout(title_text="2018 - Ratio of jobs available per graduating student", geo_scope="usa",)
