@@ -380,7 +380,7 @@ class RenderData(QWidget):
 
         for idx, row in enumerate(table):
             record = f"From school_export: [school_state] [repayment_2016] {row[0]}, {row[1]}"
-            print(record) # print(idx, row, record)
+            print(record)  # print(idx, row, record)
 
         # PART 2B
         cursor.execute(
@@ -389,7 +389,7 @@ class RenderData(QWidget):
 
         for idx, row in enumerate(table):
             record = f"From jobdata_by_state: [school_state] [a_pct25] {row[0]}, {row[1]}"
-            print(record) # print(idx, row, record)
+            print(record)  # print(idx, row, record)
 
         close_db(conn)
 
