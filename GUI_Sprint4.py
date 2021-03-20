@@ -1,7 +1,7 @@
 import openpyxl
 from PySide6.QtWidgets import QPushButton, QApplication, QMessageBox, QFileDialog, QWidget, QListWidget, QListWidgetItem
 from PySide6.QtGui import QCloseEvent, QScreen, QCursor, Qt, QFont
-from PySide6.QtWidgets import QMainWindow, QLabel, QCheckBox
+from PySide6.QtWidgets import QMainWindow, QLabel, QCheckBox, QMenuBar
 import sqlite3
 from typing import Tuple
 from os import path
@@ -10,7 +10,7 @@ import requests
 import math
 import os
 import DisplayMap
-
+from datetime import datetime
 
 def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
     #  meta_from_main is a list with the following index descriptions
@@ -241,6 +241,7 @@ class RenderData(QWidget):
 
         self.setWindowTitle("Data Visualization for Project 1 - Sprint 4 - Ryan O'Connor - COMP490 - T/R")
         self.setGeometry(100, 100, 800, 700)
+        self.setFixedSize(800, 700)
         self.center()
 
     def display_visualization(self):
@@ -430,8 +431,8 @@ class GUIWindow(QMainWindow):
     def setup_window(self):
         self.setWindowTitle("Project1 - Sprint 4 - Ryan OConnor")
         self.setGeometry(100, 100, 400, 70)
-        self.setFixedSize(400, 70)
-        self.statusBar().showMessage("GUI PROJECT")
+        self.setFixedSize(400, 100)
+        self.statusBar().showMessage("")
         self.gui_components()
         self.center()
         self.show()
@@ -440,12 +441,12 @@ class GUIWindow(QMainWindow):
         update_data = QPushButton("Update Data", self)
         update_data.clicked.connect(self.update_data)
         update_data.resize(update_data.sizeHint())
-        update_data.move(20, 15)
+        update_data.move(20, 25)
         # implement hover over button to update status bar with file chosen
 
         render_data_button = QPushButton("Render data analysis", self)
         render_data_button.clicked.connect(self.render_data)
-        render_data_button.move(140, 15)
+        render_data_button.move(140, 25)
         render_data_button.resize(render_data_button.sizeHint())
         # disable this button until file has been selected
 
@@ -453,7 +454,7 @@ class GUIWindow(QMainWindow):
         quit_button.clicked.connect(QApplication.instance().quit)
         quit_button.clicked.connect(QCloseEvent)
         quit_button.resize(quit_button.sizeHint())
-        quit_button.move(300, 15)
+        quit_button.move(300, 25)
         quit_button.setToolTip("Quit program")
 
     def update_data(self):
@@ -469,7 +470,7 @@ class GUIWindow(QMainWindow):
         close_db(conn)
         QApplication.setOverrideCursor(QCursor(Qt.ArrowCursor))
 
-        file_name = QFileDialog.getOpenFileName(self, "'Open file")[0]
+        file_name = QFileDialog.getOpenFileName(self, "Please select an .xlsx file to import from")[0]
         print(file_name, " was the file selected.")
         conn, cursor = open_db(self.db_name)
 
@@ -477,6 +478,8 @@ class GUIWindow(QMainWindow):
         read_excel_data(file_name, cursor)
         close_db(conn)
         QApplication.setOverrideCursor(QCursor(Qt.ArrowCursor))
+
+        self.statusBar().showMessage(f"Update success from: {file_name} on {datetime.now()}")
 
         return file_name
 
