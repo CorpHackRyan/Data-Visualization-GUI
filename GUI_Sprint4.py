@@ -211,17 +211,25 @@ class RenderData(QWidget):
         # CHECKBOXES
         self.color_coded_checkbox = QCheckBox("Color coded text in a list", self)
         self.color_coded_checkbox.move(100, 60)
+        self.color_coded_checkbox.clicked.connect(self.swap_color_coded_checkbox)
+
         self.render_map_checkbox = QCheckBox("Render a Map", self)
         self.render_map_checkbox.move(100, 90)
+        self.render_map_checkbox.toggle()
+        self.render_map_checkbox.clicked.connect(self.swap_render_map_checkbox)
 
         self.analysis_type1_checkbox = QCheckBox(
             "Compare the number of college graduates in a state \n(for the most recent "
             "year) with number of jobs in that \nstate that likely expect a college "
             "education.", self)
         self.analysis_type1_checkbox.setGeometry(430, 20, 300, 100)
+        self.analysis_type1_checkbox.clicked.connect(self.swap_num_grads_checkbox)
+
         self.analysis_type2_checkbox = QCheckBox("Compare the 3 year graduate cohort declining balance \npercentage to "
                                                  "the 25% salary in the state.", self)
         self.analysis_type2_checkbox.setGeometry(430, 70, 400, 100)
+        self.analysis_type2_checkbox.toggle()
+        self.analysis_type2_checkbox.clicked.connect(self.swap_3_yr_cohort_checkbox)
 
         # BUTTONS
         self.render_data_button = QPushButton("VISUALIZE", self)
@@ -438,13 +446,13 @@ class RenderData(QWidget):
         display_data.writelines("state,data\n")
 
         for key in compare_a_pct25_to_2016_repayment:
-            if key == "GU" or key == "VI":
+            if key in ("GU", "VI"):
                 continue
 
             else:
                 tot_apc25_2016_repay_rounded = (round(compare_a_pct25_to_2016_repayment[key], 2))
                 print(int(tot_apc25_2016_repay_rounded))
-                tot_apc25_2016_repay_rounded = int(tot_apc25_2016_repay_rounded)
+                # tot_apc25_2016_repay_rounded = int(tot_apc25_2016_repay_rounded)
 
                 # if total_jobs_rounded == 0:
                 #     display_text = f"State: {key}\t Total jobs: {num_jobs_in_state[key]}\t\t Total college grads: " \
@@ -474,11 +482,37 @@ class RenderData(QWidget):
     def sort_descending(self):
         self.list_control.sortItems(Qt.DescendingOrder)
 
-    def swap_color_checkbox(self):
-        self.render_map_checkbox.setChecked(False)
+    def swap_color_coded_checkbox(self):
+        status = self.color_coded_checkbox.isChecked()
+
+        if status:
+            self.render_map_checkbox.setChecked(False)
+        else:
+            self.render_map_checkbox.setChecked(True)
 
     def swap_render_map_checkbox(self):
-        self.render_map_checkbox.setChecked(False)
+        status = self.render_map_checkbox.isChecked()
+
+        if status:
+            self.color_coded_checkbox.setChecked(False)
+        else:
+            self.color_coded_checkbox.setChecked(True)
+
+    def swap_num_grads_checkbox(self):
+        status = self.analysis_type1_checkbox.isChecked()
+
+        if status:
+            self.analysis_type2_checkbox.setChecked(False)
+        else:
+            self.analysis_type2_checkbox.setChecked(True)
+
+    def swap_3_yr_cohort_checkbox(self):
+        status = self.analysis_type2_checkbox.isChecked()
+
+        if status:
+            self.analysis_type1_checkbox.setChecked(False)
+        else:
+            self.analysis_type1_checkbox.setChecked(True)
 
     def center(self):
         screen_center = QScreen.availableGeometry(QApplication.primaryScreen()).center()

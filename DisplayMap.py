@@ -2,12 +2,17 @@ import plotly.graph_objects as go
 import pandas as pd
 import random
 
+# Make sure to allow whatever map we are displaying to be passed in, so we can update the headlines properly;
+
+# color_bar_title = (variable passed in gui)
+# title = (variable passed in gui)
+
 
 def display_map(compare_total_jobs_total_data):
 
     df = pd.read_csv("display_map_data.csv")
+    color = ["Greens", "Reds", "Blues"]
 
-    color = ["Greens", "Reds"]
     fig = go.Figure(data=go.Choropleth(
         locations=df['state'],  # Spatial coordinates
         z=df['data'].astype(float),  # Data to be color-coded
