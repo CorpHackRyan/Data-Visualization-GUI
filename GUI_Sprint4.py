@@ -406,27 +406,32 @@ class RenderData(QWidget):
             if repayment_2016_dict[key] == 0:
                 repayment_2016_dict[key] = 0.0001  # States with 0 data get this due to dividing by 0
 
-            print(key, repayment_2016_dict[key])
+            print(key, repayment_2016_dict[key], "part 2a, repayment_2016_dict")
 
         # ########################### PART 2B
-        # cursor.execute(
-        #     'SELECT area_title, a_pct25 FROM jobdata_by_state')
-        # table = cursor.fetchall()
-        #
-        # for idx, row in enumerate(table):
-        #     record = f"From jobdata_by_state: [school_state] [a_pct25] {row[0]}, {row[1]}"
-        #     print(record)  # print(idx, row, record)
-        #
-        # # ##################### Need to convert state to state initial
-        # state_from_school_export = str(row[0])
-        # print(state_from_school_export, "made the cut", "occ code ->", check_occ_code,
-        #       "state abbreviated: ", abbreviate_state(state_from_school_export),
-        #       "total_emp col: ", row[2])
-        #
-        # abbr_state = abbreviate_state(state_from_school_export)
-        # tot_emp_jobs_in_state = int(row[2])
-        # tot_emp = num_jobs_in_state[abbr_state]
-        # num_jobs_in_state[abbr_state] = tot_emp + tot_emp_jobs_in_state
+        a_pc25_dict = {"AK": 0, "AL": 0, "AR": 0, "AS": 0, "AZ": 0, "CA": 0,
+                       "CO": 0, "CT": 0, "DC": 0, "DE": 0, "FL": 0, "FM": 0, "GA": 0,
+                       "GU": 0, "HI": 0, "IA": 0, "ID": 0, "IL": 0, "IN": 0, "KS": 0,
+                       "KY": 0, "LA": 0, "MA": 0, "MD": 0, "ME": 0, "MH": 0, "MI": 0,
+                       "MN": 0, "MO": 0, "MP": 0, "MS": 0, "MT": 0, "NC": 0, "ND": 0,
+                       "NE": 0, "NH": 0, "NJ": 0, "NM": 0, "NV": 0, "NY": 0, "OH": 0,
+                       "OK": 0, "OR": 0, "PA": 0, "PR": 0, "PW": 0, "RI": 0, "SC": 0,
+                       "SD": 0, "TN": 0, "TX": 0, "UT": 0, "VA": 0, "VI": 0, "VT": 0,
+                       "WA": 0, "WI": 0, "WV": 0, "WY": 0}
+
+        cursor.execute(
+            'SELECT area_title, a_pct25 FROM jobdata_by_state')
+        table = cursor.fetchall()
+
+        for idx, row in enumerate(table):
+            a_pct25_from_job_date_by_state = str(row[0])
+            abbr_state = abbreviate_state(a_pct25_from_job_date_by_state)
+            current_a_pct25 = row[1]
+            tot_ann_pct25_dict = a_pc25_dict[abbr_state]
+            a_pc25_dict[abbr_state] = current_a_pct25 + tot_ann_pct25_dict
+
+        for key in a_pc25_dict:
+            print(key, a_pc25_dict[key], "part 2b - a_pct25_dict")
 
         close_db(conn)
 
