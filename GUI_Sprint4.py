@@ -459,8 +459,8 @@ class RenderData(QWidget):
                 #     display_data.writelines(f"{key}, {total_jobs_rounded}\n")
 
                 display_data.writelines(f"{key}, {tot_apc25_2016_repay_rounded}\n")
-                #list_item = QListWidgetItem(display_text, listview=self.list_control)
-                #list_item.setForeground(Qt.darkRed)
+                # list_item = QListWidgetItem(display_text, listview=self.list_control)
+                # list_item.setForeground(Qt.darkRed)
 
         display_data.close()
 

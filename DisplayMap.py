@@ -2,6 +2,7 @@ import plotly.graph_objects as go
 import pandas as pd
 import random
 
+
 def display_map(compare_total_jobs_total_data):
 
     df = pd.read_csv("display_map_data.csv")
