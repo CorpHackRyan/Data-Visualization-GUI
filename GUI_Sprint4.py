@@ -329,8 +329,6 @@ class RenderData(QWidget):
                 tot_emp = num_jobs_in_state[abbr_state]
                 num_jobs_in_state[abbr_state] = tot_emp + tot_emp_jobs_in_state
 
-        print("should be same as counter", num_jobs_in_state["WY"], "\n")
-
         print(num_jobs_in_state)
         print(num_grads_in_state)
 
@@ -432,6 +430,41 @@ class RenderData(QWidget):
 
         for key in a_pc25_dict:
             print(key, a_pc25_dict[key], "part 2b - a_pct25_dict")
+
+        compare_a_pct25_to_2016_repayment = {k: (a_pc25_dict[k] / repayment_2016_dict[k]) for k in a_pc25_dict}
+        print(compare_a_pct25_to_2016_repayment)
+
+        display_data = open("display_map_data.csv", "w+")
+        display_data.writelines("state,data\n")
+
+        for key in compare_a_pct25_to_2016_repayment:
+            if key == "GU" or key == "VI":
+                continue
+
+            else:
+                tot_apc25_2016_repay_rounded = (round(compare_a_pct25_to_2016_repayment[key], 2))
+                print(int(tot_apc25_2016_repay_rounded))
+                tot_apc25_2016_repay_rounded = int(tot_apc25_2016_repay_rounded)
+
+                # if total_jobs_rounded == 0:
+                #     display_text = f"State: {key}\t Total jobs: {num_jobs_in_state[key]}\t\t Total college grads: " \
+                #                    f"{num_grads_in_state[key]}\t\t {total_jobs_rounded} jobs available " \
+                #                    f"per graduating student"
+                #     display_data.writelines(f"{key}, {total_jobs_rounded}\n")
+                #
+                # else:
+                #     display_text = f"State: {key}\t Total jobs: {num_jobs_in_state[key]}\t Total college grads: " \
+                #                    f"{num_grads_in_state[key]}\t\t {total_jobs_rounded} jobs available " \
+                #                    f"per graduating student"
+                #     display_data.writelines(f"{key}, {total_jobs_rounded}\n")
+
+                display_data.writelines(f"{key}, {tot_apc25_2016_repay_rounded}\n")
+                #list_item = QListWidgetItem(display_text, listview=self.list_control)
+                #list_item.setForeground(Qt.darkRed)
+
+        display_data.close()
+
+        DisplayMap.display_map(display_data)
 
         close_db(conn)
 
