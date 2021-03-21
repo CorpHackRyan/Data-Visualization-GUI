@@ -4,7 +4,6 @@ import pandas as pd
 
 def display_map(compare_total_jobs_total_data):
 
-    df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv')
     df = pd.read_csv("display_map_data.csv")
 
     fig = go.Figure(data=go.Choropleth(
