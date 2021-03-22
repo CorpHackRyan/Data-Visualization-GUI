@@ -1,6 +1,6 @@
-import main
 import urllib
 import GUI_Sprint4
+
 
 def test_get_meta_data():
     test_url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
@@ -58,8 +58,7 @@ def test_database():
               f'School state: {row[7]}\nTest DB School state: {test_datadict["school_state"]}\n\n'
               f'2016 Repayment cohort 3 yr declining balance: {row[8]}\n')
 
-    # assert row[0] == int(test_datadict["school_id"])
-
+    assert row[0] == int(test_datadict["school_id"])
     GUI_Sprint4.close_db(conn)
 
 
@@ -76,9 +75,9 @@ def test_xlsx_read():
 
     urllib.request.urlretrieve(xls_link, test_xls_filename)
 
-    conn, cursor = main.open_db(test_dbname)
-    main.setup_school_db(cursor)
-    main.read_excel_data(test_xls_filename, cursor)
+    conn, cursor = GUI_Sprint4.open_db(test_dbname)
+    GUI_Sprint4.setup_school_db(cursor)
+    GUI_Sprint4.read_excel_data(test_xls_filename, cursor)
 
     # Execute select statement for all rows that contain "Massachusetts"
     test_result = cursor.execute("""
@@ -94,12 +93,12 @@ def test_xlsx_read():
     # read in all data containing 'Massachusetts' (22 total from xlsx file) from the db.
     assert counter == times_assertion_data_appears
 
-    main.close_db(conn)
+    GUI_Sprint4.close_db(conn)
 
 
 def test_new_table_exists():
     test_dbname = "test_db.db"
-    conn, cursor = main.open_db(test_dbname)
+    conn, cursor = GUI_Sprint4.open_db(test_dbname)
 
     table_name = "jobdata_by_state"
 
@@ -118,12 +117,12 @@ def test_new_table_exists():
 
     assert(table_exists == 1)
 
-    main.close_db(conn)
+    GUI_Sprint4.close_db(conn)
 
 
 def test_old_table_exists():
     test_dbname = "test_db.db"
-    conn, cursor = main.open_db(test_dbname)
+    conn, cursor = GUI_Sprint4.open_db(test_dbname)
 
     table_name = "school_export"
 
@@ -140,7 +139,7 @@ def test_old_table_exists():
         print(f"Table {table_name} does not exist.")
 
     assert(table_exists == 1)
-    main.close_db(conn)
+    GUI_Sprint4.close_db(conn)
 
 
 def test_insert_xls_db():
@@ -148,9 +147,9 @@ def test_insert_xls_db():
     test_data = ("Test_area_title", 0, "Test_occ_title", 0, 0, 0, "123456789")
 
     test_dbname = "test_db.db"
-    conn, cursor = main.open_db(test_dbname)
+    conn, cursor = GUI_Sprint4.open_db(test_dbname)
 
-    main.insert_xls_db(cursor, test_data)
+    GUI_Sprint4.insert_xls_db(cursor, test_data)
 
     # read back what we just wrote to the database
     test_result = cursor.execute("""
@@ -163,4 +162,4 @@ def test_insert_xls_db():
 
     # assert -> selected case matches previous test_data case
     assert str(row[0]) == test_data[6]
-    main.close_db(conn)
+    GUI_Sprint4.close_db(conn)
