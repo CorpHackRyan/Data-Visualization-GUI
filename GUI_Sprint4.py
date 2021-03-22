@@ -113,7 +113,7 @@ def open_db(filename: str) -> Tuple[sqlite3.Connection, sqlite3.Cursor]:
     print("file exists:" + str(path.exists(filename)))
 
     db_connection = sqlite3.connect(filename)
-    cursor = db_connection.cursor()  # get ready to read/write data
+    cursor = db_connection.cursor()
     return db_connection, cursor
 
 
@@ -258,11 +258,8 @@ class RenderData(QWidget):
 
         cursor.execute('SELECT school_state, student_size_2018 FROM school_export')
         table = cursor.fetchall()
-        # final_data_list = []
 
         self.list_control.clear()
-
-        # ################################  DATA ANALYSIS - PART 1A  ##################################
         num_grads_in_state = {"AK": 0, "AL": 0, "AR": 0, "AS": 0, "AZ": 0, "CA": 0,
                               "CO": 0, "CT": 0, "DC": 0, "DE": 0, "FL": 0, "FM": 0, "GA": 0,
                               "GU": 0, "HI": 0, "IA": 0, "ID": 0, "IL": 0, "IN": 0, "KS": 0,
@@ -278,14 +275,10 @@ class RenderData(QWidget):
             record = f"{row[0]}, {row[1]}"
 
             print("Record directly from the row in the table: state/student size 2018-->", record)
-            # final_data_list.append(record)
 
             if row[1] is None:
                 continue
-
             else:
-                # row [0] is a STRING state name ... row [1] includes an INTEGER - 2018 student size
-                # counter = counter + row[1]
                 state_abbr_from_table = row[0]
                 student_size_2018 = row[1]
 
@@ -294,9 +287,7 @@ class RenderData(QWidget):
                 num_grads_in_state[state_abbr_from_table] = state_total + student_size_2018
                 print(num_grads_in_state[state_abbr_from_table], "totals from each states:")
 
-            # print("should be same as counter", num_grads_in_state["CA"], "\n")
-
-        # I'm dividing by 4 years here, to simplify the size of a senior graduating class
+        # Dividing by 4 years here - to simplify the size of a senior graduating class
         for student_total_2018 in num_grads_in_state:
             num_grads_in_state[student_total_2018] = num_grads_in_state[student_total_2018] / 4
 
@@ -323,7 +314,6 @@ class RenderData(QWidget):
             check_occ_code = int(check_occ_code[:2])
 
             if 30 <= check_occ_code <= 49:
-                # print(row[:2], "did not make the cut!", idx, "<-- index")
                 continue
 
             else:
@@ -348,8 +338,6 @@ class RenderData(QWidget):
         display_data.writelines("state,data\n")
 
         for key in compare_total_jobs_to_grads:
-            # print(key, '->', compare_total_jobs_to_grads[key])
-            # display_text = f"{key}\t {compare_total_jobs_to_grads[key]}"
             total_jobs_rounded = (round(compare_total_jobs_to_grads[key], 2))
 
             if total_jobs_rounded == 0:
@@ -370,20 +358,7 @@ class RenderData(QWidget):
         display_data.close()
         DisplayMap.display_map(compare_total_jobs_to_grads)
 
-        # DATA ANALYSIS PART 2A
-        # Compare the 3 year graduate cohort declining balance percentage to the 25% salary in the state
-
-        # Select school_state, repayment_repayment_cohort_3_year_declining_balance_2016 from school_export
-        # Update a dictionary of states with sums of the data from each state in above cursor
-        #
-        # Select area_title and a_pct25 from jobdata_by_state
-        # Update the area_title to convert to state (use earlier function)
-        # Update dictionary of states with sums of the data for each state
-        #
-        # Then divide a_pct25 / 2016_cohort
-
-        # PART 2A
-
+        ########################## DATA ANALYSIS PART 2A
         repayment_2016_dict = {"AK": 0, "AL": 0, "AR": 0, "AS": 0, "AZ": 0, "CA": 0,
                                "CO": 0, "CT": 0, "DC": 0, "DE": 0, "FL": 0, "FM": 0, "GA": 0,
                                "GU": 0, "HI": 0, "IA": 0, "ID": 0, "IL": 0, "IN": 0, "KS": 0,
@@ -401,7 +376,6 @@ class RenderData(QWidget):
         for idx, row in enumerate(table):
             if row[1] is None:
                 continue
-
             else:
                 state_from_school_export = str(row[0])
                 repayment_2016_data = row[1]
@@ -425,8 +399,7 @@ class RenderData(QWidget):
                        "SD": 0, "TN": 0, "TX": 0, "UT": 0, "VA": 0, "VI": 0, "VT": 0,
                        "WA": 0, "WI": 0, "WV": 0, "WY": 0}
 
-        cursor.execute(
-            'SELECT area_title, a_pct25 FROM jobdata_by_state')
+        cursor.execute('SELECT area_title, a_pct25 FROM jobdata_by_state')
         table = cursor.fetchall()
 
         for idx, row in enumerate(table):
@@ -452,26 +425,12 @@ class RenderData(QWidget):
             else:
                 tot_apc25_2016_repay_rounded = (round(compare_a_pct25_to_2016_repayment[key], 2))
                 print(int(tot_apc25_2016_repay_rounded))
-                # tot_apc25_2016_repay_rounded = int(tot_apc25_2016_repay_rounded)
-
-                # if total_jobs_rounded == 0:
-                #     display_text = f"State: {key}\t Total jobs: {num_jobs_in_state[key]}\t\t Total college grads: " \
-                #                    f"{num_grads_in_state[key]}\t\t {total_jobs_rounded} jobs available " \
-                #                    f"per graduating student"
-                #     display_data.writelines(f"{key}, {total_jobs_rounded}\n")
-                #
-                # else:
-                #     display_text = f"State: {key}\t Total jobs: {num_jobs_in_state[key]}\t Total college grads: " \
-                #                    f"{num_grads_in_state[key]}\t\t {total_jobs_rounded} jobs available " \
-                #                    f"per graduating student"
-                #     display_data.writelines(f"{key}, {total_jobs_rounded}\n")
 
                 display_data.writelines(f"{key}, {tot_apc25_2016_repay_rounded}\n")
                 # list_item = QListWidgetItem(display_text, listview=self.list_control)
                 # list_item.setForeground(Qt.darkRed)
 
         display_data.close()
-
         DisplayMap.display_map(display_data)
 
         close_db(conn)
