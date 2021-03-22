@@ -23,8 +23,9 @@ def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
     page_counter = 0
     final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
 
+    # use this for local work: -> for page_counter in range(1):
     for page_counter in range(meta_from_main[3]):
-    # for page_counter in range(1):
+
         response = requests.get(final_url)
 
         if response.status_code != 200:
@@ -184,7 +185,6 @@ def abbreviate_state(state_long_name):
               "Virgin Islands": "VI", "Alabama": "AL"}
 
     state_abbreviated = states[state_long_name]
-
     return state_abbreviated
 
 
@@ -231,7 +231,6 @@ class RenderData(QWidget):
         self.analysis_type2_checkbox.toggle()
         self.analysis_type2_checkbox.clicked.connect(self.swap_3_yr_cohort_checkbox)
 
-        # BUTTONS
         self.render_data_button = QPushButton("VISUALIZE", self)
         self.render_data_button.setGeometry(10, 150, 770, 40)
         self.render_data_button.clicked.connect(self.display_visualization)
@@ -281,9 +280,7 @@ class RenderData(QWidget):
             else:
                 state_abbr_from_table = row[0]
                 student_size_2018 = row[1]
-
                 state_total = num_grads_in_state[state_abbr_from_table]
-
                 num_grads_in_state[state_abbr_from_table] = state_total + student_size_2018
                 print(num_grads_in_state[state_abbr_from_table], "totals from each states:")
 
@@ -291,8 +288,7 @@ class RenderData(QWidget):
         for student_total_2018 in num_grads_in_state:
             num_grads_in_state[student_total_2018] = num_grads_in_state[student_total_2018] / 4
 
-        # ################################  DATA ANALYSIS - PART 1B   #########################
-
+        # DATA ANALYSIS - PART 1B
         num_jobs_in_state = {"AK": 0, "AL": 0, "AR": 0, "AS": 0, "AZ": 0, "CA": 0,
                              "CO": 0, "CT": 0, "DC": 0, "DE": 0, "FL": 0, "FM": 0, "GA": 0,
                              "GU": 0, "HI": 0, "IA": 0, "ID": 0, "IL": 0, "IN": 0, "KS": 0,
@@ -315,20 +311,15 @@ class RenderData(QWidget):
 
             if 30 <= check_occ_code <= 49:
                 continue
-
             else:
                 state_from_school_export = str(row[0])
                 print(state_from_school_export, "made the cut", "occ code ->", check_occ_code,
                       "state abbreviated: ", abbreviate_state(state_from_school_export),
                       "total_emp col: ", row[2])
-
                 abbr_state = abbreviate_state(state_from_school_export)
                 tot_emp_jobs_in_state = int(row[2])
                 tot_emp = num_jobs_in_state[abbr_state]
                 num_jobs_in_state[abbr_state] = tot_emp + tot_emp_jobs_in_state
-
-        print(num_jobs_in_state)
-        print(num_grads_in_state)
 
         compare_total_jobs_to_grads = {k: (num_jobs_in_state[k] / num_grads_in_state[k]) for k in num_jobs_in_state}
 
@@ -358,7 +349,7 @@ class RenderData(QWidget):
         display_data.close()
         DisplayMap.display_map(compare_total_jobs_to_grads)
 
-        ########################## DATA ANALYSIS PART 2A
+        # DATA ANALYSIS PART 2A
         repayment_2016_dict = {"AK": 0, "AL": 0, "AR": 0, "AS": 0, "AZ": 0, "CA": 0,
                                "CO": 0, "CT": 0, "DC": 0, "DE": 0, "FL": 0, "FM": 0, "GA": 0,
                                "GU": 0, "HI": 0, "IA": 0, "ID": 0, "IL": 0, "IN": 0, "KS": 0,
@@ -369,8 +360,7 @@ class RenderData(QWidget):
                                "SD": 0, "TN": 0, "TX": 0, "UT": 0, "VA": 0, "VI": 0, "VT": 0,
                                "WA": 0, "WI": 0, "WV": 0, "WY": 0}
 
-        cursor.execute(
-            'SELECT school_state, repayment_repayment_cohort_3_year_declining_balance_2016 FROM school_export')
+        cursor.execute('SELECT school_state, repayment_repayment_cohort_3_year_declining_balance_2016 FROM school_export')
         table = cursor.fetchall()
 
         for idx, row in enumerate(table):
@@ -388,7 +378,7 @@ class RenderData(QWidget):
 
             print(key, repayment_2016_dict[key], "part 2a, repayment_2016_dict")
 
-        # ########################### PART 2B
+        # PART 2B
         a_pc25_dict = {"AK": 0, "AL": 0, "AR": 0, "AS": 0, "AZ": 0, "CA": 0,
                        "CO": 0, "CT": 0, "DC": 0, "DE": 0, "FL": 0, "FM": 0, "GA": 0,
                        "GU": 0, "HI": 0, "IA": 0, "ID": 0, "IL": 0, "IN": 0, "KS": 0,
@@ -419,9 +409,8 @@ class RenderData(QWidget):
         display_data.writelines("state,data\n")
 
         for key in compare_a_pct25_to_2016_repayment:
-            if key in ("GU", "VI"):
+            if key in ("GU", "VI"): # Omitting Guam & Virgin Islands due to skewing data
                 continue
-
             else:
                 tot_apc25_2016_repay_rounded = (round(compare_a_pct25_to_2016_repayment[key], 2))
                 print(int(tot_apc25_2016_repay_rounded))
