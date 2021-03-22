@@ -347,7 +347,7 @@ class RenderData(QWidget):
             list_item.setForeground(Qt.darkRed)
 
         display_data.close()
-        DisplayMap.display_map(compare_total_jobs_to_grads)
+        #DisplayMap.display_map(compare_total_jobs_to_grads)
 
         # DATA ANALYSIS PART 2A
         repayment_2016_dict = {"AK": 0, "AL": 0, "AR": 0, "AS": 0, "AZ": 0, "CA": 0,
@@ -405,7 +405,7 @@ class RenderData(QWidget):
         compare_a_pct25_to_2016_repayment = {k: (a_pc25_dict[k] / repayment_2016_dict[k]) for k in a_pc25_dict}
         print(compare_a_pct25_to_2016_repayment)
 
-        display_data = open("display_map_data.csv", "w+")
+        display_data = open("display_map_data2.csv", "w+")
         display_data.writelines("state,data\n")
 
         for key in compare_a_pct25_to_2016_repayment:
@@ -420,7 +420,42 @@ class RenderData(QWidget):
                 # list_item.setForeground(Qt.darkRed)
 
         display_data.close()
-        DisplayMap.display_map(display_data)
+        # DisplayMap.display_map(display_data)
+
+
+
+        # compare_a_pct25_to_2016_repayment is full dict of data
+        # compare_total_jobs_to_grads is full dict of dat
+
+        title_bar_stuff = "Set this to whatever data selection we are using- jobs per grad or cohort" \
+                          "based on what thing we choose"
+
+        # I think we want to check which type of data to display first, then do HOW to display it
+
+        if self.analysis_type1_checkbox.isChecked():
+            print("analysis type 1 checked")
+            type_of_analysis = "1"
+        else:
+            print("analysis type 2 checked")
+            type_of_analysis = "2"
+
+        if self.render_map_checkbox.isChecked():
+            print("see a map is checked")
+            DisplayMap.display_map(type_of_analysis)
+        else:
+            print("see a list is checked")
+
+
+
+
+
+
+
+
+
+
+
+
 
         close_db(conn)
 

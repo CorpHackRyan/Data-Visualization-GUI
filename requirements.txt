@@ -3,5 +3,4 @@ openpyxl
 plotly
 Pyside6
 pandas
-
-
+libgl1-mesa-dev
