@@ -4,7 +4,6 @@ from PySide6.QtGui import QCloseEvent, QScreen, QCursor, Qt, QFont
 from PySide6.QtWidgets import QMainWindow, QLabel, QCheckBox
 import sqlite3
 from typing import Tuple
-from os import path
 import secrets
 import requests
 import math
