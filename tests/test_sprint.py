@@ -1,6 +1,6 @@
 import urllib
 import GUI_Sprint4
-import main
+
 
 def test_get_meta_data():
     test_url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
