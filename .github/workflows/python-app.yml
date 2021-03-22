@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: roconnor1-Sprint 1 Project 1
+name: roconnor1-Sprint 4 Project 1
 
 on:
   push:
@@ -32,6 +32,8 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip3 install requests
         pip3 install openpyxl
+        sudo apt update
+        sudo apt install libgl1-mesa-glx
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
