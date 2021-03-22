@@ -273,8 +273,6 @@ class RenderData(QWidget):
             print(idx, row)
             record = f"{row[0]}, {row[1]}"
 
-            print("Record directly from the row in the table: state/student size 2018-->", record)
-
             if row[1] is None:
                 continue
             else:
@@ -282,7 +280,6 @@ class RenderData(QWidget):
                 student_size_2018 = row[1]
                 state_total = num_grads_in_state[state_abbr_from_table]
                 num_grads_in_state[state_abbr_from_table] = state_total + student_size_2018
-                print(num_grads_in_state[state_abbr_from_table], "totals from each states:")
 
         # Dividing by 4 years here - to simplify the size of a senior graduating class
         for student_total_2018 in num_grads_in_state:
@@ -301,11 +298,8 @@ class RenderData(QWidget):
 
         cursor.execute('SELECT area_title, occ_code, tot_emp FROM jobdata_by_state')
         table = cursor.fetchall()
-        total_jobs_by_state = []
 
         for idx, row in enumerate(table):
-            total_jobs_by_state.append(record)
-
             check_occ_code = row[1]
             check_occ_code = int(check_occ_code[:2])
 
@@ -313,17 +307,12 @@ class RenderData(QWidget):
                 continue
             else:
                 state_from_school_export = str(row[0])
-                print(state_from_school_export, "made the cut", "occ code ->", check_occ_code,
-                      "state abbreviated: ", abbreviate_state(state_from_school_export),
-                      "total_emp col: ", row[2])
                 abbr_state = abbreviate_state(state_from_school_export)
                 tot_emp_jobs_in_state = int(row[2])
                 tot_emp = num_jobs_in_state[abbr_state]
                 num_jobs_in_state[abbr_state] = tot_emp + tot_emp_jobs_in_state
 
         compare_total_jobs_to_grads = {k: (num_jobs_in_state[k] / num_grads_in_state[k]) for k in num_jobs_in_state}
-
-        print("Final numbers", compare_total_jobs_to_grads, )
 
         display_data = open("display_map_data.csv", "w+")
         display_data.writelines("state,data\n")
@@ -332,22 +321,11 @@ class RenderData(QWidget):
             total_jobs_rounded = (round(compare_total_jobs_to_grads[key], 2))
 
             if total_jobs_rounded == 0:
-                display_text = f"State: {key}\t Total jobs: {num_jobs_in_state[key]}\t\t Total college grads: " \
-                               f"{num_grads_in_state[key]}\t\t {total_jobs_rounded} jobs available " \
-                               f"per graduating student"
                 display_data.writelines(f"{key}, {total_jobs_rounded}\n")
-
             else:
-                display_text = f"State: {key}\t Total jobs: {num_jobs_in_state[key]}\t Total college grads: " \
-                               f"{num_grads_in_state[key]}\t\t {total_jobs_rounded} jobs available " \
-                               f"per graduating student"
                 display_data.writelines(f"{key}, {total_jobs_rounded}\n")
-
-            list_item = QListWidgetItem(display_text, listview=self.list_control)
-            list_item.setForeground(Qt.darkRed)
 
         display_data.close()
-        #DisplayMap.display_map(compare_total_jobs_to_grads)
 
         # DATA ANALYSIS PART 2A
         repayment_2016_dict = {"AK": 0, "AL": 0, "AR": 0, "AS": 0, "AZ": 0, "CA": 0,
@@ -378,7 +356,7 @@ class RenderData(QWidget):
 
             print(key, repayment_2016_dict[key], "part 2a, repayment_2016_dict")
 
-        # PART 2B
+        # DATA ANALYSIS - PART 2B
         a_pc25_dict = {"AK": 0, "AL": 0, "AR": 0, "AS": 0, "AZ": 0, "CA": 0,
                        "CO": 0, "CT": 0, "DC": 0, "DE": 0, "FL": 0, "FM": 0, "GA": 0,
                        "GU": 0, "HI": 0, "IA": 0, "ID": 0, "IL": 0, "IN": 0, "KS": 0,
@@ -414,48 +392,53 @@ class RenderData(QWidget):
             else:
                 tot_apc25_2016_repay_rounded = (round(compare_a_pct25_to_2016_repayment[key], 2))
                 print(int(tot_apc25_2016_repay_rounded))
-
                 display_data.writelines(f"{key}, {tot_apc25_2016_repay_rounded}\n")
-                # list_item = QListWidgetItem(display_text, listview=self.list_control)
-                # list_item.setForeground(Qt.darkRed)
 
         display_data.close()
-        # DisplayMap.display_map(display_data)
-
-
-
-        # compare_a_pct25_to_2016_repayment is full dict of data
-        # compare_total_jobs_to_grads is full dict of dat
-
-        title_bar_stuff = "Set this to whatever data selection we are using- jobs per grad or cohort" \
-                          "based on what thing we choose"
-
-        # I think we want to check which type of data to display first, then do HOW to display it
 
         if self.analysis_type1_checkbox.isChecked():
-            print("analysis type 1 checked")
+            print("analysis 1 checked")
             type_of_analysis = "1"
         else:
-            print("analysis type 2 checked")
+            print("analysis 2 checked")
             type_of_analysis = "2"
 
         if self.render_map_checkbox.isChecked():
-            print("see a map is checked")
             DisplayMap.display_map(type_of_analysis)
+
         else:
             print("see a list is checked")
 
+            if type_of_analysis == "1":
+                for key in compare_total_jobs_to_grads:
+                    total_jobs_rounded = (round(compare_total_jobs_to_grads[key], 2))
 
+                    if total_jobs_rounded == 0:
+                        display_text = f"State: {key}\t Total jobs: {num_jobs_in_state[key]}\t\t Total college grads: " \
+                                       f"{num_grads_in_state[key]}\t\t {total_jobs_rounded} jobs available " \
+                                       f"per graduating student"
+                    else:
+                        display_text = f"State: {key}\t Total jobs: {num_jobs_in_state[key]}\t Total college grads: " \
+                                       f"{num_grads_in_state[key]}\t\t {total_jobs_rounded} jobs available " \
+                                       f"per graduating student"
+                    list_item = QListWidgetItem(display_text, listview=self.list_control)
+                    list_item.setForeground(Qt.darkRed)
 
+            else:
+                for key in compare_a_pct25_to_2016_repayment:
+                    apc25_to_2016_repay_rounded = (round(compare_a_pct25_to_2016_repayment[key], 2))
+                    repay_2016_rounded = (round(repayment_2016_dict[key], 2))
 
+                    if apc25_to_2016_repay_rounded == 0:
+                        display_text = f"State: {key}\t 3 year graduate cohort declining balance percent: " \
+                                       f"{repayment_2016_dict[key]}\t 25% salary: {a_pc25_dict[key]}\t\t Result: " \
+                                       f"{apc25_to_2016_repay_rounded}"
+                    else:
+                        display_text = f"State: {key}\t 3 year graduate cohort declining balance percent: {repay_2016_rounded}\t" \
+                                       f"25% salary: {a_pc25_dict[key]}\t Result: {apc25_to_2016_repay_rounded}"
 
-
-
-
-
-
-
-
+                    list_item = QListWidgetItem(display_text, listview=self.list_control)
+                    list_item.setForeground(Qt.darkRed)
 
         close_db(conn)
 
