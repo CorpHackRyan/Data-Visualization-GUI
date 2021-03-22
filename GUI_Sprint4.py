@@ -409,7 +409,7 @@ class RenderData(QWidget):
         display_data.writelines("state,data\n")
 
         for key in compare_a_pct25_to_2016_repayment:
-            if key in ("GU", "VI"): # Omitting Guam & Virgin Islands due to skewing data
+            if key in ("GU", "VI"):  # Omitting Guam & Virgin Islands due to skewing data
                 continue
             else:
                 tot_apc25_2016_repay_rounded = (round(compare_a_pct25_to_2016_repayment[key], 2))
