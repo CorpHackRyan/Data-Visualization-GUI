@@ -23,8 +23,8 @@ def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
     page_counter = 0
     final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
 
-    # for page_counter in range(meta_from_main[3]):
-    for page_counter in range(1):
+    for page_counter in range(meta_from_main[3]):
+    # for page_counter in range(1):
         response = requests.get(final_url)
 
         if response.status_code != 200:

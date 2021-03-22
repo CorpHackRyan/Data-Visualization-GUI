@@ -40,16 +40,10 @@ def test_database():
     test_meta_data = GUI_Sprint4.get_metadata(test_url)
     GUI_Sprint4.process_data(test_url, test_meta_data, cursor)
 
-    print("hi")
     test_result = cursor.execute("""
                             SELECT *
                             FROM school_export
                             WHERE school_id = ?""", (test_school_id,))
-
-    for val in test_result:
-        print(val, test_result[val])
-
-    print("hi after")
 
     for row in test_result:
         print(f'School id: {row[0]}  \nTest DB school id: {test_datadict["school_id"]} \n\n'
@@ -64,7 +58,7 @@ def test_database():
               f'School state: {row[7]}\nTest DB School state: {test_datadict["school_state"]}\n\n'
               f'2016 Repayment cohort 3 yr declining balance: {row[8]}\n')
 
-    #assert row[0] == int(test_datadict["school_id"])
+    # assert row[0] == int(test_datadict["school_id"])
 
     GUI_Sprint4.close_db(conn)
 
