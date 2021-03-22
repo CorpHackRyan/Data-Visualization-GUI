@@ -33,7 +33,7 @@ jobs:
         pip3 install requests
         pip3 install openpyxl
         sudo apt update
-        sudo apt install libgl1-mesa-glx
+        sudo apt install libopengl0 -y
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
