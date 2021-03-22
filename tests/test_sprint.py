@@ -1,6 +1,6 @@
 import urllib
 import GUI_Sprint4
-
+import main
 
 def test_get_meta_data():
     test_url = "https://api.data.gov/ed/collegescorecard/v1/schools.json?school.degrees_awarded.predominant=2,3&fields=id," \
@@ -163,3 +163,11 @@ def test_insert_xls_db():
     # assert -> selected case matches previous test_data case
     assert str(row[0]) == test_data[6]
     GUI_Sprint4.close_db(conn)
+
+
+def test_abbreviate_state():
+    abbr_state = GUI_Sprint4.abbreviate_state("Alaska")
+    assert abbr_state == "AK"
+
+    abbr_state = GUI_Sprint4.abbreviate_state("Hawaii")
+    assert abbr_state != "AK"
