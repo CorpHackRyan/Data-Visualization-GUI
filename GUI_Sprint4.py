@@ -23,9 +23,7 @@ def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
     page_counter = 0
     final_url = f"{url}&api_key={secrets.api_key}&page={page_counter}"
 
-    # use this for local work: -> for page_counter in range(1):
     for page_counter in range(meta_from_main[3]):
-
         response = requests.get(final_url)
 
         if response.status_code != 200:
@@ -34,7 +32,6 @@ def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
 
         json_data = response.json()
 
-        # All the results on each page in a singular list returned
         each_page_data = json_data["results"]
 
         for school_data in each_page_data:
@@ -45,7 +42,6 @@ def process_data(url: str, meta_from_main, cursor: sqlite3.Cursor):
                           school_data["2016.repayment.repayment_cohort.3_year_declining_balance"])
 
             print(f"Page {page_counter} of {meta_from_main[3]} ->", school_tpl)
-
             insert_db(cursor, school_tpl)
 
         page_counter += 1
@@ -112,14 +108,14 @@ def insert_xls_db(cursor: sqlite3.Cursor, xls_tuple):
 
 def open_db(filename: str) -> Tuple[sqlite3.Connection, sqlite3.Cursor]:
     print("file exists:" + str(path.exists(filename)))
-
     db_connection = sqlite3.connect(filename)
     cursor = db_connection.cursor()
+
     return db_connection, cursor
 
 
 def close_db(connection: sqlite3.Connection):
-    connection.commit()  # make sure any changes get saved
+    connection.commit()
     connection.close()
 
 
@@ -128,27 +124,23 @@ def read_excel_data(xls_filename, cursor: sqlite3.Cursor):
         work_book = openpyxl.load_workbook(xls_filename)
         work_sheet = work_book.active
 
-        # BETTER SOLUTION: Get columns with specific titles so no matter what order they are in we can get correct data.
-        # Hard coded columns which contain the specific data we are looking for
         # col 1=area_title,  col7=occ_code,  col8=occ_title, col9=o_group, col10=tot_emp,  col19=h_pct25,  col24=a_pct25
         cols = [1, 7, 8, 9, 10, 19, 24]
         unique_id_counter = 1
 
         for row in work_sheet.iter_rows():
-
             cells = [cell.value for (idx, cell) in enumerate(row) if (
                     idx in cols and cell.value is not None)]
 
-            # skip header row in excel file if row 1
+            # Skip header row in excel file if row 1
             if row[0].row == 1:
                 pass
             else:
                 if cells[3] == "major":
-                    # Using current row number as unique identifier because we wouldn't know why I'm doing this
+                    # Using current row number as unique identifier
                     cells.append(unique_id_counter)
                     unique_id_counter += 1
                     del cells[3]
-                    print(cells)
                     insert_xls_db(cursor, cells)
 
     except Exception as error:
@@ -208,7 +200,7 @@ class RenderData(QWidget):
         display_list.resize(770, 440)
         display_list.move(10, 200)
 
-        # CHECKBOXES
+        # CHECK BOXES
         self.color_coded_checkbox = QCheckBox("Color coded text in a list", self)
         self.color_coded_checkbox.move(100, 60)
         self.color_coded_checkbox.clicked.connect(self.swap_color_coded_checkbox)
@@ -231,6 +223,7 @@ class RenderData(QWidget):
         self.analysis_type2_checkbox.toggle()
         self.analysis_type2_checkbox.clicked.connect(self.swap_3_yr_cohort_checkbox)
 
+        # PUSH BUTTONS
         self.render_data_button = QPushButton("VISUALIZE", self)
         self.render_data_button.setGeometry(10, 150, 770, 40)
         self.render_data_button.clicked.connect(self.display_visualization)
@@ -254,11 +247,11 @@ class RenderData(QWidget):
 
     def display_visualization(self):
         conn, cursor = open_db(self.db_name_from_visual_btn)
-
         cursor.execute('SELECT school_state, student_size_2018 FROM school_export')
         table = cursor.fetchall()
 
         self.list_control.clear()
+
         num_grads_in_state = {"AK": 0, "AL": 0, "AR": 0, "AS": 0, "AZ": 0, "CA": 0,
                               "CO": 0, "CT": 0, "DC": 0, "DE": 0, "FL": 0, "FM": 0, "GA": 0,
                               "GU": 0, "HI": 0, "IA": 0, "ID": 0, "IL": 0, "IN": 0, "KS": 0,
@@ -271,7 +264,6 @@ class RenderData(QWidget):
 
         for idx, row in enumerate(table):
             print(idx, row)
-            record = f"{row[0]}, {row[1]}"
 
             if row[1] is None:
                 continue
@@ -354,8 +346,6 @@ class RenderData(QWidget):
             if repayment_2016_dict[key] == 0:
                 repayment_2016_dict[key] = 0.0001  # States with 0 data get this due to dividing by 0
 
-            print(key, repayment_2016_dict[key], "part 2a, repayment_2016_dict")
-
         # DATA ANALYSIS - PART 2B
         a_pc25_dict = {"AK": 0, "AL": 0, "AR": 0, "AS": 0, "AZ": 0, "CA": 0,
                        "CO": 0, "CT": 0, "DC": 0, "DE": 0, "FL": 0, "FM": 0, "GA": 0,
@@ -377,9 +367,6 @@ class RenderData(QWidget):
             tot_ann_pct25_dict = a_pc25_dict[abbr_state]
             a_pc25_dict[abbr_state] = current_a_pct25 + tot_ann_pct25_dict
 
-        for key in a_pc25_dict:
-            print(key, a_pc25_dict[key], "part 2b - a_pct25_dict")
-
         compare_a_pct25_to_2016_repayment = {k: (a_pc25_dict[k] / repayment_2016_dict[k]) for k in a_pc25_dict}
         print(compare_a_pct25_to_2016_repayment)
 
@@ -397,18 +384,14 @@ class RenderData(QWidget):
         display_data.close()
 
         if self.analysis_type1_checkbox.isChecked():
-            print("analysis 1 checked")
             type_of_analysis = "1"
         else:
-            print("analysis 2 checked")
             type_of_analysis = "2"
 
         if self.render_map_checkbox.isChecked():
             DisplayMap.display_map(type_of_analysis)
 
         else:
-            print("see a list is checked")
-
             if type_of_analysis == "1":
                 for key in compare_total_jobs_to_grads:
                     total_jobs_rounded = (round(compare_total_jobs_to_grads[key], 2))
@@ -421,6 +404,7 @@ class RenderData(QWidget):
                         display_text = f"State: {key}\t Total jobs: {num_jobs_in_state[key]}\t Total college grads: " \
                                        f"{num_grads_in_state[key]}\t\t {total_jobs_rounded} jobs available " \
                                        f"per graduating student"
+
                     list_item = QListWidgetItem(display_text, listview=self.list_control)
                     list_item.setForeground(Qt.darkRed)
 
@@ -434,11 +418,12 @@ class RenderData(QWidget):
                                        f"{repayment_2016_dict[key]}\t 25% salary: {a_pc25_dict[key]}\t\t Result: " \
                                        f"{apc25_to_2016_repay_rounded}"
                     else:
-                        display_text = f"State: {key}\t 3 year graduate cohort declining balance percent: {repay_2016_rounded}\t" \
-                                       f"25% salary: {a_pc25_dict[key]}\t Result: {apc25_to_2016_repay_rounded}"
+                        display_text = f"State: {key}\t 3 year graduate cohort declining balance percent: " \
+                                       f"{repay_2016_rounded}\t 25% salary: {a_pc25_dict[key]}\t Result: " \
+                                       f"{apc25_to_2016_repay_rounded}"
 
                     list_item = QListWidgetItem(display_text, listview=self.list_control)
-                    list_item.setForeground(Qt.darkRed)
+                    list_item.setForeground(Qt.darkBlue)
 
         close_db(conn)
 
@@ -516,13 +501,11 @@ class GUIWindow(QMainWindow):
         update_data.clicked.connect(self.update_data)
         update_data.resize(update_data.sizeHint())
         update_data.move(20, 25)
-        # implement hover over button to update status bar with file chosen
 
         render_data_button = QPushButton("Render data analysis", self)
         render_data_button.clicked.connect(self.render_data)
         render_data_button.move(140, 25)
         render_data_button.resize(render_data_button.sizeHint())
-        # disable this button until file has been selected
 
         quit_button = QPushButton("Exit", self)
         quit_button.clicked.connect(QApplication.instance().quit)
@@ -546,6 +529,7 @@ class GUIWindow(QMainWindow):
 
         file_name = QFileDialog.getOpenFileName(self, "Please select an .xlsx file to import from")[0]
         print(file_name, " was the file selected.")
+
         conn, cursor = open_db(self.db_name)
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -559,7 +543,6 @@ class GUIWindow(QMainWindow):
 
     def render_data(self):
         self.render_gui.show()
-        # render the color coded text or graphical map data
 
     def closeEvent(self, event: QCloseEvent):
         reply = QMessageBox.question(

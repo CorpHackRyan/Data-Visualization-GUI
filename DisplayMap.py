@@ -2,11 +2,6 @@ import plotly.graph_objects as go
 import pandas as pd
 import random
 
-# Make sure to allow whatever map we are displaying to be passed in, so we can update the headlines properly;
-
-# color_bar_title = (variable passed in gui)
-# title = (variable passed in gui)
-
 
 def display_map(analysis_type):
     color = ["Greens", "Reds", "Blues"]
@@ -21,7 +16,6 @@ def display_map(analysis_type):
         display_map_csv_data = "display_map_data2.csv"
 
     df = pd.read_csv(display_map_csv_data)
-
 
     fig = go.Figure(data=go.Choropleth(
         locations=df['state'],  # Spatial coordinates
