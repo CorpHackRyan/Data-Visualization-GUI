@@ -107,7 +107,6 @@ def insert_xls_db(cursor: sqlite3.Cursor, xls_tuple):
 
 
 def open_db(filename: str) -> Tuple[sqlite3.Connection, sqlite3.Cursor]:
-    print("file exists:" + str(path.exists(filename)))
     db_connection = sqlite3.connect(filename)
     cursor = db_connection.cursor()
 
@@ -263,8 +262,6 @@ class RenderData(QWidget):
                               "WA": 0, "WI": 0, "WV": 0, "WY": 0}
 
         for idx, row in enumerate(table):
-            print(idx, row)
-
             if row[1] is None:
                 continue
             else:
@@ -368,7 +365,6 @@ class RenderData(QWidget):
             a_pc25_dict[abbr_state] = current_a_pct25 + tot_ann_pct25_dict
 
         compare_a_pct25_to_2016_repayment = {k: (a_pc25_dict[k] / repayment_2016_dict[k]) for k in a_pc25_dict}
-        print(compare_a_pct25_to_2016_repayment)
 
         display_data = open("display_map_data2.csv", "w+")
         display_data.writelines("state,data\n")
@@ -378,7 +374,6 @@ class RenderData(QWidget):
                 continue
             else:
                 tot_apc25_2016_repay_rounded = (round(compare_a_pct25_to_2016_repayment[key], 2))
-                print(int(tot_apc25_2016_repay_rounded))
                 display_data.writelines(f"{key}, {tot_apc25_2016_repay_rounded}\n")
 
         display_data.close()
