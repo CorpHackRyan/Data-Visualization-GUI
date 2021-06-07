@@ -1,13 +1,8 @@
-    PROJECT 1 - SPRINT 4
-
     Last updated: 3/22/21 - 1:59AM - Final Submission
-    Authored by: Ryan O'Connor
 
     (To view the GUI test plan, please view the Ryan_OConnor_GUI_manual_test_plan.pdf file)
-
     
-
-Project 1 - Sprint4 is a program that will connect to api.data.gov through the API and request information about universities. It then takes that data and exports it into a newly created database. Next, it navigates through a local copy of a MS-Excel file (.xlsx) through the use of the openpyxl library in Python. It parses through the data with specific parameters and exports that data into to a new table in the already existing database.
+Data Visualization GUI is a program that will connect to api.data.gov through the API and request information about universities. It then takes that data and exports it into a newly created database. Next, it navigates through a local copy of a MS-Excel file (.xlsx) through the use of the openpyxl library in Python. It parses through the data with specific parameters and exports that data into to a new table in the already existing database.
 
 When you load the application, you will be greeted with a small window with 3 options to choose from. You have the option to update data, render data analysis or quit the program. You must first update the data before you can render it. This is where the program will connect to data.gov, collect all the data and then prompt you to select the Excel file to insert into the database. 
 If the update was a success, you will see a message in the status bar stating it was successful, otherwise you will receive an error message.
