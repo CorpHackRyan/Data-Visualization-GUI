@@ -1,4 +1,4 @@
-- Data Visualization GUI
+# Data Visualization GUI
     
     Last updated: 3/22/21 - 1:59AM - Final Submission
 
