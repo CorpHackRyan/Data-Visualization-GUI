@@ -1,3 +1,5 @@
+- Data Visualization GUI
+    
     Last updated: 3/22/21 - 1:59AM - Final Submission
 
     (To view the GUI test plan, please view the Ryan_OConnor_GUI_manual_test_plan.pdf file)
